@@ -61,7 +61,7 @@ Proposed phases: `CREATED -> CONNECTING -> RUNNING -> SUBMIT_DRAIN -> [DLR_DRAIN
 
 A single failed TX does not stop the run while another TX remains healthy. D-039 confirms that a recovered TX may rejoin as a new bind generation, accepting future messages only; previously ambiguous submits are never replayed. RX reconnection in-process is expected under RX-loss policies. In TRX setups, apply the TX-loss stop rule if all send-capable TRX sessions disappear.
 
-## D-039 reconnect and run lifecycle
+## Confirmed connection, correlation and local evidence (D-039)
 
 - Rebind named TX/RX/TRX sessions with configurable 1/2/4/8/16/30s-capped retry backoff and small jitter; avoid blind retries of permanent authentication errors.
 - Recovered TXs rejoin as new session generations, with reset Adaptive controller and future work only. Initial absence of all TX binds is startup failure (exit 3); loss of all TX after Run starts is `all_tx_unavailable` (exit 4).
