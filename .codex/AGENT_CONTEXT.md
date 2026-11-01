@@ -32,7 +32,7 @@ Read this file before work. The product is **SMPP Test Studio**, a standalone SM
 
 ## D-035 approved response policy
 
-D-035 fixes the shared three-outcome `deliver_sm_resp` selection model (success, configured error, no response), full DLR override, percentage remainder, optional ACK delay and seeded selection with accurate counters. The detailed timing, allowed status values and scheduling capacity remain unapproved. Do not implement until the owner separately authorizes code.
+D-035 fixes the shared three-outcome `deliver_sm_resp` selection model (success, configured error, no response), full DLR override, percentage remainder, optional ACK delay and seeded selection with accurate counters. D-036 subsequently confirmed fixed delay defaults, the initial four statuses and the 10,000 delayed-response scheduling cap; do not treat them as open. Do not implement until the owner separately authorizes code.
 
 ## D-036 fixed delay and bounded ACK policy
 
@@ -49,6 +49,10 @@ Confirmed: one schema-v1 JSON/YAML outer config, strict `connection.sessions` pl
 ## D-039 connection and reporting policy
 
 Confirmed: controlled reconnect backoff, returned TX as a new bind generation, DLR 120s TTL/1,000,000-cap, local High Performance reports, 5s snapshots and no automatic report deletion. Never replay uncertain messages or restart interrupted runs.
+
+## D-040 approved acceptance and freeze gate
+
+D-040 confirms automated SMPP/DLR/Fault/Adaptive/recovery/Headless C++ and Go acceptance, 50k *actual physical* submit PDUs/s sustained five minutes on a peer-qualified reference host, separate 5k submit PDUs/s DLR scenario for three minutes, 8 GiB reference RSS target, two reproducible performance runs, finite authorized tests, localhost UI, secret redaction and Linux/Windows amd64 smoke. **These are targets only: none have been executed.** Design freeze requires consistent documents; it never authorizes implementation without separate owner request per D-023.
 
 ## Development discipline
 
