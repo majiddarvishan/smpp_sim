@@ -17,6 +17,14 @@ This is a proposal for verifying the agreed scope. **No implementation or test r
 - Verify intentional DLR ACK error, delay and no-response distribution with deterministic seed; keep actual counts.
 - Verify no MO test scenario is required, no TLS dependency, and no query/cancel/replace operation in V1.
 
+## Approved D-032–D-034 acceptance cases (not yet executed)
+
+- **D-032:** inspect actual bind/submit defaults, literal unchanged Basic addresses and invalid input rejection; GSM7 unpacked octets/DCS `0x00`, strict BMP UTF-16BE/`0x08`, raw binary/`0x04`, GSM extension septets, non-BMP rejection, 16-bit/8-bit UDH vs SAR framing, 255-part cap, no-split at or below 254 `short_message` octets and explicit `message_payload` behavior above it.
+- **D-033:** DLR with both text `id:` and TLV: **text ID must win** and mismatch is reported with both values. DLR with unusable/missing text ID: TLV fallback; delivery state resolution remains `message_state` TLV-first and text `stat:` fallback. Check opaque exact case-sensitive matching, cross-session receipt, duplicate/ambiguous IDs, partial multipart segment acceptance, conditional `0x02` and vendor `0x03` no false Missing, default configurable 60s drain.
+- **D-034:** versioned JSON/YAML config parity, reject unknown keys and unbounded unintended workloads, no headless listener/UI, secret redaction, C++ subprocess test + cleanup, JSON result on execution failures where possible, aggregate accuracy without full capture, and exit statuses `0/2/3/4/5/6` without built-in assertions.
+
+These are **acceptance requirements**, not test results.
+
 ## Traffic/controller correctness
 
 - Constant, Ramp-up/down, Step, Burst, Unlimited, Adaptive Window each produce correct timing intent and stable observability.
