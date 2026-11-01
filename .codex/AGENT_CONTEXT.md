@@ -34,6 +34,10 @@ Read this file before work. The product is **SMPP Test Studio**, a standalone SM
 
 D-035 fixes the shared three-outcome `deliver_sm_resp` selection model (success, configured error, no response), full DLR override, percentage remainder, optional ACK delay and seeded selection with accurate counters. The detailed timing, allowed status values and scheduling capacity remain unapproved. Do not implement until the owner separately authorizes code.
 
+## D-036 fixed delay and bounded ACK policy
+
+Confirmed: ACK Fixed delay defaults to 0ms (disabled) and uses a separate post-outcome percentage; default maximum delay is 60s, configurable. Initial nonzero negative-status allowlist: `ESME_RSYSERR`, `ESME_RX_T_APPN`, `ESME_RX_P_APPN`, `ESME_RX_R_APPN`. Maximum delayed pending ACKs defaults to 10,000 per run; reaching it requires controlled `resource_limit` termination, not silent policy changes. No Response schedules no timer or ACK. D-036 does not authorize implementation.
+
 ## Development discipline
 
 Prefer changes scoped to agreed features; tests and docs updated together. Clearly separate accepted decisions from proposals. Never invent performance PASS/results. Keep config credentials out of VCS and logs. Do not overwrite prior design decisions silently. Favor local repeatable tests.
