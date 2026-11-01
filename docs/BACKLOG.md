@@ -1,6 +1,6 @@
 # Backlog, Exclusions and Open Decisions
 
-Status: 2026-11-01. Do not treat candidate defaults as approved.
+Status: 2026-11-01. D-001–D-040 are owner-confirmed. Engineering implementation details below are not additional owner-level design decisions.
 
 ## Deferred beyond V1
 
@@ -18,7 +18,7 @@ Status: 2026-11-01. Do not treat candidate defaults as approved.
 - Native C++ SDK/FFI (use headless subprocess JSON results); separate orchestration server.
 - SMSC-side `deliver_sm` generator/server implementation (this is a client simulator).
 
-## Unsettled details to finalize before implementation
+## Scoped implementation and interoperability details (not P0 owner decisions)
 
 1. **SMPP parameters:** SMPP 3.4 only; connection defaults (D-024), optional automatic enquire_link (D-025), Auto + Manual encoding (D-026), multipart mode selection (D-027), and Auto + Manual TON/NPI **selection policy** (D-028) are approved. D-032/D-033 now settle Basic malformed addresses, bind version, baseline optional fields, GSM7/UCS2/binary wire defaults, non-BMP handling, UDH/SAR, no-split/payload and per-segment DLR matching. Still open: unbind timeout, Advanced TLV catalog, manual DCS/UCS2 mismatch UX, and vendor interoperability fixtures.
 2. **Nested config and API:** D-034+D-038 CONFIRMED the headless invocation, strict v1 outer and minimum nested input/result contracts, `connection.sessions`, finite termination, four-operation Go API and exit codes with no assertions. Remaining implementation details: optional Advanced schema field type spellings, Go types and CLI/Web UI field presentation; do not reopen the approved minimum contract.
@@ -28,17 +28,17 @@ Status: 2026-11-01. Do not treat candidate defaults as approved.
 6. **Fault injection:** D-035 confirms the three-way response model and complete DLR override; **D-036 confirms** disabled-by-default Fixed ACK delay, a separate post-selection delay percentage, configurable 60s default delay cap, initial supported status codes (`ESME_RSYSERR`, `ESME_RX_T_APPN`, `ESME_RX_P_APPN`, `ESME_RX_R_APPN`), default 10,000 pending delayed ACKs and controlled `resource_limit` stop upon exhaustion. Only precise nested configuration naming and implementation mechanics remain.
 7. **Data:** CSV schema and invalid-row rules, shuffle implementation for huge files, templates and random strategies, safety restrictions on test destinations.
 8. **Storage:** D-039 fixes local-only reports, High Performance default, 1,000 samples, 512 MiB optional raw capture, 5s snapshot flush, crash-interrupted behavior and no automatic deletion. Remaining: atomic file-format mechanics, permission checks and observable disk-error handling.
-9. **Acceptance:** measurable hardware/conditions for 50k TPS, sustained time, allowed p95/timeout resource use, end-to-end DLR load test workload, cross-platform C++ runner smoke test.
-10. **Security and packaging:** secret injection and redaction, UI bind address/access defaults, authorized-target/real-number guardrails, reproducible builds.
+9. **Acceptance:** D-040 establishes a reproducible five-minute 50k physical-submit PDU/s reference profile with two runs, <8 GiB RSS, verified peer capacity, plus a separate 5k submit PDU/s three-minute DLR workload and C++ smoke. Implementation must produce measured evidence; no benchmark was run at design freeze.
+10. **Security and packaging:** D-040 requires finite tests, explicit authorized destinations and probes, localhost-only embedded UI default, environment-secret redaction, conservative local reports, Linux/Windows amd64 release smoke. Detailed platform packaging and validation tests belong to implementation.
 
-## Short next design sequence
+## Next engineering sequence (after separate implementation authorization)
 
 - Design advanced TLV allowlist and vendor-specific interoperability fixtures; D-039 already fixes DLR mapping retention/cap.
 - Finalize optional **Advanced** schema field types, persistence paths and CLI/Web UI bindings while retaining the confirmed D-034/D-038 minimal API contract.
 - Preserve D-037 Adaptive Window tuning; specify nested headless config fields and exact congestion-status classification without reopening the confirmed controller rules.
-- Set objective V1 acceptance tests; only then begin coding in small, tested increments.
+- Implement the D-040 acceptance suite and reference benchmark harness in small, tested increments; report results only after execution.
 
-**Reminder:** no simulator implementation exists at the time of this documentation commit.
+**Reminder:** V1 design approval alone does not authorize implementation and does not establish benchmark PASS.
 
 ## Confirmed design closure — 2026-11-01
 
@@ -60,16 +60,6 @@ The owner authorized continuing with the previously offered D-038 package. **D-0
 
 D-039 is **CONFIRMED** by the owner. Its complete approved policy is in [DECISIONS.md](DECISIONS.md), [ARCHITECTURE.md](ARCHITECTURE.md#confirmed-connection-correlation-and-local-evidence-d-039) and [PROTOCOL_DATA_FAULTS.md](PROTOCOL_DATA_FAULTS.md#confirmed-dlr-correlation-retention-d-039). Confirmed defaults include 1/2/4/8/16/30s-capped reconnect backoff; new bind generations for returned TXs; startup exit 3 versus runtime all-TX-loss exit 4; 120s DLR mapping retention with 1,000,000 active-entry limit; default High Performance, 1,000 samples, 512 MiB capture ceiling, 5s snapshots; local run reports, no automatic deletion. These are **not pending**. No implementation authorization.
 
-## Candidate D-040 — V1 acceptance and design freeze (PENDING OWNER APPROVAL)
+## Confirmed D-040 design acceptance — 2026-11-01
 
-**NOT CONFIRMED.** This is the final owner decision package. D-023 still prohibits any implementation until separately authorized. No benchmark or tests have been run.
-
-- **Functional P0:** SMPP 3.4 binds TX/RX/TRX; submit encodings, TON/NPI and UDH/SAR; negative/late submit responses; text-first DLR ID and independent TLV-first status; per-segment and conditional DLR; Fault Injection D-035/D-036; six traffic patterns including D-037 Adaptive zero-window probes; D-039 reconnect, bounded correlation and local reports; crash/stop behavior; no replay. All must have passing automated fixtures after implementation.
-- **Cross-language P0:** C++ subprocess/headless test under Google Test or Catch2, JSON/YAML parity, Go package lifecycle tests, versioned JSON report/counters, correct D-034 exit codes; no built-in assertions or separate native C++ API.
-- **50k TPS benchmark objective:** single Go simulator, physical submit PDUs rather than logical SMS, measured **5 minutes**, report actual one-second samples and response/timeout counters. Proposed reproducible Linux x86_64 reference host has 16 logical CPUs, 32 GiB RAM and isolated at-least-1GbE link/loopback, with separately proven SMPP test peer capacity over 60k submits/s. Use 8 TX/TRX sessions as a *benchmark scenario* (not a change to Basic one-TRX default), short fixed GSM7 messages, DLR OFF, no optional raw capture. Candidate PASS: average Actual >=50,000 submit PDUs/s for five minutes, no unexplained simulator PDU loss or forced safety stop; peak simulator RSS below 8 GiB for this profile. Record full environment and two reproducible runs, no fabricated performance claims.
-- **Separate DLR load:** proposed 5,000 submit PDUs/s for 3 minutes with known deterministic submit IDs and receipts, verify correct correspondence, ACK totals, missing/unmatched/late receipts and bounded memory; this is **not** a 50k DLR throughput claim.
-- **Safety:** finite workloads, explicitly authorized destination/probe addresses, bounded resources, localhost-only embedded UI default, environment-secret redaction, local report permissions. Remote UI binding requires a separately reviewed control/authentication policy. One executable and Go-importable package; propose Linux amd64 and Windows amd64 packaging smoke. No mandatory external database/orchestrator or GitHub Actions.
-- **Freeze gate:** consistency review of all approved D-001–D-039 plus D-040 on approval, no unresolved P0 product behavior, acceptance cases and benchmark environment documented. Design freeze does **not** mean executed tests PASS or code implementation authorized. After coding, release is gated by executed functional/cross-language evidence and measured benchmark evidence, or an explicit owner-approved performance exception.
-
-**Owner review:** approve or revise D-040 as one bundle. Until approved, keep it a candidate. Do not generate code or mark design FROZEN.
-
+D-040 is **CONFIRMED** by the owner, recorded in [DECISIONS.md](DECISIONS.md) and [ACCEPTANCE.md](ACCEPTANCE.md#confirmed-v1-acceptance-and-benchmark-gate-d-040). All P0 product behavior has a documented default, invariant or scoped exclusion in decisions D-001–D-040. The 50,000 physical submit PDU/s for five minutes and 5,000 submit PDU/s with DLRs for three minutes are **future measured acceptance objectives**, not completed tests. A documented consistency audit is mandatory before declaring V1 design FROZEN. D-023 still prohibits implementation until separately authorized.
