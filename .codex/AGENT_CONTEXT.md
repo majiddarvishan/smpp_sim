@@ -38,6 +38,10 @@ D-035 fixes the shared three-outcome `deliver_sm_resp` selection model (success,
 
 Confirmed: ACK Fixed delay defaults to 0ms (disabled) and uses a separate post-outcome percentage; default maximum delay is 60s, configurable. Initial nonzero negative-status allowlist: `ESME_RSYSERR`, `ESME_RX_T_APPN`, `ESME_RX_P_APPN`, `ESME_RX_R_APPN`. Maximum delayed pending ACKs defaults to 10,000 per run; reaching it requires controlled `resource_limit` termination, not silent policy changes. No Response schedules no timer or ACK. D-036 does not authorize implementation.
 
+## D-037 approved Adaptive Window tuning
+
+Independent per-TX/TRX batch windows: initial 32, max 1,024, batch deadline 3s versus per-submit response timeout 5s, healthy p95<=1s, step increase max(1,floor(window/8)), degrade half, three severe consecutive rounds to zero, 5s single-flight authorized probes and two successive OK responses reopen at window=1. Shared maximum 8,192 pending PDUs including probes and configurable 10m finite Adaptive run deadline. Correct bounded late response tracking; no blind resend; all TX loss stops the run, RX-only loss follows D-016. See `docs/TRAFFIC_CONTROL.md`. No implementation is authorized.
+
 ## Development discipline
 
 Prefer changes scoped to agreed features; tests and docs updated together. Clearly separate accepted decisions from proposals. Never invent performance PASS/results. Keep config credentials out of VCS and logs. Do not overwrite prior design decisions silently. Favor local repeatable tests.
