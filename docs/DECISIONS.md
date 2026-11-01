@@ -1,0 +1,39 @@
+# Decision Register
+
+Recorded from product design discussion through **2026-11-01**. **Confirmed** = explicitly accepted or unambiguously required by the owner. Do not promote proposed defaults to confirmed design silently.
+
+| ID | Status | Decision |
+| --- | --- | --- |
+| D-001 | CONFIRMED | Build a lightweight, maintainable **SMPP client simulator**, not a large operational platform. |
+| D-002 | CONFIRMED | One Go core, single executable for CLI + embedded Web UI + headless; importable Go library; no mandatory external stack. |
+| D-003 | CONFIRMED | Target **50,000 submitted `submit_sm` PDUs/s per instance**, to validate, not claim as achieved. |
+| D-004 | CONFIRMED | Support Single SMS and Bulk tests, TX/RX/TRX binds, multi-session, simultaneous MT submit and DLR receive. |
+| D-005 | CONFIRMED | **No MO scenarios.** MO receive/injection subsystem removed from scope. |
+| D-006 | CONFIRMED | TLS, `query_sm`, `cancel_sm`, `replace_sm` postponed to backlog. |
+| D-007 | CONFIRMED | Six V1 traffic methods: Constant, Ramp-up/down, Step Load, Burst/Spike, Unlimited, Adaptive Window. |
+| D-008 | CONFIRMED | Adaptive Window is batch-based: send up to current window, wait bounded time for all responses, shrink on degraded rounds, grow when healthy, never over max, and may reach zero. |
+| D-009 | CONFIRMED | At window=0, stop normal traffic and auto-recover via controlled periodic submit probes; no manual restart needed for recovery. |
+| D-010 | CONFIRMED | Adaptive Windows independent per TX session, bounded also by global rate/safety controls. |
+| D-011 | CONFIRMED | Traffic distribution configurable by Test Run: Equal, Adaptive and Weighted. |
+| D-012 | CONFIRMED | Completion configurable: Submit-only or Submit+DLR wait/drain. |
+| D-013 | CONFIRMED | Capture configurable: Full Detail vs High Performance; optional Sample Capture; accurate aggregate counts and DLR correlation independent of sampling. |
+| D-014 | CONFIRMED | Process crash/restart: preserve available reports, mark Interrupted; **no automatic resume** and no blind resend of ambiguous requests. |
+| D-015 | CONFIRMED | Dataset exhaustion policy configurable Stop at End vs Loop, with Sequential vs Shuffle order. |
+| D-016 | CONFIRMED | Full DLR RX loss during otherwise active TX: per-run Continue MT or Pause MT; RX reconnect during live process. |
+| D-017 | CONFIRMED | If one TX disconnects, continue through other healthy TX sessions. If **all TX** unavailable, **stop** Test Run. |
+| D-018 | CONFIRMED | Automated integration for Go and other languages, **explicitly C++**. Go API plus headless JSON/YAML config and machine-readable JSON result; no CLI interaction or Web UI required in headless use. |
+| D-019 | CONFIRMED | **No assertions within simulator.** External testing framework (including C++ Google Test etc.) owns pass/fail checks. |
+| D-020 | CONFIRMED | Configurable percentage-based fault injection for incoming `deliver_sm` response, with DLR-specific override, status code, delay and no-response options. |
+| D-021 | CONFIRMED | Favor limited dependencies and single active Test Run per instance; avoid complex distributed recovery/orchestration systems. |
+
+## Interpretation notes
+
+- SMPP DLR is ordinarily carried inside `deliver_sm`. D-020 does not add an independent `delivery_report` PDU or MO feature.
+- Adaptive Window zero does **not** mean no traffic at all: small explicit probes are allowed and reported separately.
+- The rule to stop on all-TX loss overrides recovery of sending sessions for that run. RX in-process reconnect remains valid where TX is still healthy.
+- Previous example values for windows, timeouts, error mix and status/exit codes were **illustrations only**, not approved defaults.
+- A successful `submit_sm_resp` is not proof of final SMS delivery.
+
+## Future entries
+
+Add dated records when the owner accepts precise defaults/config schemas/engineering trade-offs. Never rewrite the decision register to hide superseded decisions; append an explicit superseding entry.
