@@ -1,6 +1,6 @@
 # Tasks — SMPP Test Studio
 
-## Current phase: requirements closure (no implementation authorization yet)
+## Current phase: owner decisions complete; design freeze audit pending; implementation not authorized
 
 ### P0 — Design before code
 - [x] Record approved scope and decisions in repository.
@@ -17,14 +17,21 @@
 - [x] Confirm DLR **text-first `id:`**, TLV fallback, state parsing, per-segment correlation and 60s drain (**D-033**).
 - [x] Confirm headless outer JSON/YAML+JSON v1 contract and execution exit codes for C++ (**D-034**).
 - [x] Confirm D-038 minimal nested JSON/YAML config/result shapes, strict validation, multiple SMPP sessions, C++ subprocess and four-operation Go lifecycle.
-- [ ] Define optional Advanced config/type fields, advanced SMPP TLV allowlist and vendor interoperability fixtures; preserve confirmed D-034/D-038.
+
 - [x] Confirm D-035 response selection model.
 - [x] Confirm D-036 fixed ACK delay, separate post-selection delay percentage, four error codes, default 10,000 pending ACK limit and controlled `resource_limit` stop.
 - [x] Confirm D-037 Adaptive Window windows, batch timing, degraded/severe response, zero-window probes, safety cap and finite run deadline.
-- [ ] Specify detailed throughput-pacing parameters for non-Adaptive profiles and supported congestion-status classification/late-response bounded bookkeeping.
+
 - [x] Confirm D-039 connection recovery/rejoin, RX loss, 120s DLR retention and 1,000,000 mapping cap, local capture/snapshots and no automatic cleanup.
+
+- [x] Approve measurable V1 acceptance, five-minute 50k physical-submit TPS benchmark and separate DLR workload (D-040).
+- [x] Complete owner decisions D-001–D-040; design freeze still requires a cross-file consistency audit.
+
+### Bounded engineering details (not additional owner approval gates)
+- [ ] Define optional Advanced config/type fields, advanced SMPP TLV allowlist and vendor interoperability fixtures; preserve confirmed D-034/D-038.
+- [ ] Specify detailed throughput-pacing parameters for non-Adaptive profiles and supported congestion-status classification/late-response bounded bookkeeping.
 - [ ] Specify low-level reconnect-generation fencing, bounded map eviction mechanics, optional artifact serialization and vendor fixtures; preserve confirmed D-039 policy.
-- [ ] Approve measurable V1 acceptance and benchmark workload.
+- [ ] Verify destination authorization, UI localhost binding, secret/log redaction and reference benchmark fixture during implementation.
 
 ### P1 — Implementation *after* user requests it
 - [ ] Minimal Go SMPP client core, PDU and session lifecycle plus unit tests.
