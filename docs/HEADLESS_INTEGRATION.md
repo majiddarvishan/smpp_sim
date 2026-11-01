@@ -19,7 +19,33 @@ The **caller owns assertions** (Google Test / Catch2 in C++, Go testing, pytest,
 - Confirmed process exit codes express execution health **not test assertions**: `0` = run finished as requested even with SMSC rejections/missing DLR; `2` = configuration/input error; `3` = startup/connect/bind failure; `4` = runtime could not complete, including all-TX loss or safety stop; `5` = cancelled/deadline; `6` = internal or result-write error. The result's termination reason is more detailed than an exit code. Caller (C++ Google Test/Catch2, Go, Python, Java) decides test pass/fail from the JSON.
 - Deterministic input generation uses explicit seed; timing/network scheduling and remote SMSC outcomes are not promised bit-for-bit deterministic. Preserve CLI/Go/headless semantic parity.
 
-The above is confirmed **design**, not implemented code. Nested config fields and Go API method signatures must still be specified while keeping the approved outer schema and exit codes.
+The above is confirmed **design**, not implemented code. D-038 now confirms the nested V1 input/result categories, validation, and Go lifecycle operations in the section below; optional low-level type spellings may be refined without changing these approved meanings.
+
+## Confirmed nested Headless and Go API V1 (D-038)
+
+**Approved design; implementation not started.** D-038 makes the D-034 outer contract concrete without adding a service, native C++ SDK or assertion engine.
+
+### Versioned input and validation
+
+- JSON and YAML share one strict `schema_version: 1` and **only** the approved top-level `connection`, `message`, `traffic`, `completion`, optional `capture`, `faults`, `seed`. A legacy top-level `test` is **not** accepted. Unknown keys, duplicate YAML mapping keys, mismatched types, invalid values and incompatible field combinations cause configuration error (headless exit 2).
+- `connection.sessions` is a nonempty list of named SMPP bindings. Each entry uses `id`, `host`, `port`, `system_id`, `password_env`, `bind_mode` (tx/rx/trx), optional positive `weight`, and optional timeout and enquire-link overrides inheriting D-024/D-025. One TRX entry is the usual simple-case default. No plaintext password key is accepted and credentials never enter reports.
+- `message` supports fixed `source`, `destination`, `text` plus explicit binary base64 and dataset/CSV alternatives. Optional `encoding=auto`, `multipart=auto`, `request_dlr=false`, Advanced `registered_delivery` override and `data_coding` and individual source/destination TON/NPI overrides obey D-026–D-033; no silent address rewriting. Dataset options remain nested inside `message`.
+- `traffic` contains `mode` (one of six V1 profiles), finite `count`, `duration` or finite Stop-at-End dataset, mode-specific fields (for example `tps`/`adaptive`), and `distribution` (equal/adaptive/weighted). Do not permit accidental unbounded work. D-037 provides Adaptive's bounded defaults, including a default 10-minute run deadline.
+- `completion` contains `mode=submit|submit_and_dlr` and `dlr_timeout` (60s default from D-033). Optional `capture` is bounded and `faults` contains D-035/D-036 ACK policies. Optional integer `seed` allows reproducible selections; report the resolved seed without exposing secrets.
+- Relative input dataset paths resolve **from the config file directory**, not the current working directory. Output is controlled solely by the `--result` argument. All modes use the same typed config resolution and validation.
+
+### Versioned result and exit behavior
+
+- The required top-level JSON keys are `schema_version`, `run_id`, `run_status`, `termination_reason`, `started_at`, `finished_at`, redacted `effective_config`, `counters`, `per_session`, `dlr`, `diagnostics`. Timestamps are UTC RFC3339; counters are integral; durations and latency fields expose explicit **milliseconds** units. On failure preserve available partial counters and attempt atomic result publication; logs go to **stderr**, not into machine-readable output.
+- `run_status`: `completed`, `stopped`, `cancelled`, `error`, and historical persisted `interrupted` after process crash. Distinguish `termination_reason`: `completed`, `dataset_exhausted`, `all_tx_unavailable`, `resource_limit`, `run_deadline`, `cancelled`, `startup_failure`, `internal_error`; additional bounded diagnostic detail may be recorded.
+- Keep D-034 exit code mapping **unchanged**: 0 normal finite completion even on negative SMSC responses/missing DLR; 2 config; 3 startup/connect/bind; 4 runtime/all-TX/resource limit; 5 cancelled or run deadline; 6 internal/result write fault. Result write failures report through stderr and exit 6. Caller frameworks own assertions.
+- Report distinct logical SMS and physical submit PDU counters, per-segment acceptance/rejection/timeout/uncertainty, recovery probes, DLR delivered/failed/missing/duplicate/unmatched/ambiguous/late, **text-first DLR message-ID conflicts** and selected-versus-sent ACK faults. Label event counters that overlap to avoid double counting; full capture is optional and bounded.
+
+### Language and lifecycle interfaces
+
+- Go public lifecycle design: `New(Config) (Runner,error)`, `Runner.Run(context.Context) (Result,error)`, `Runner.Stop()`, `Runner.Close()` (idempotent). The concrete Go type form may be made idiomatic without changing these four operations and data/error semantics. No extra engine or built-in assertion DSL. Caller cancellation and shutdown clean up network and local resources; never resend an uncertain submit.
+- C++ (Google Test/Catch2) starts the **same** `smpp-studio run --headless --config ... --result ...` with safe argument arrays, isolated temporary paths, environment credentials and a process deadline, then parses JSON and owns its own assertions. Python/Java/shell can use the same contract.
+- Never expose secrets in logs or result files. This design does **not** authorize implementation.
 
 ## Illustrative invocation (not yet implemented)
 
@@ -28,24 +54,29 @@ smpp-studio run --headless --config case.yaml --result result.json
 ```
 
 ```yaml
-# Illustrative draft; not an approved config schema
+# Design example consistent with the approved D-038 groups; not yet executable.
 schema_version: 1
 connection:
-  host: 127.0.0.1
-  port: 2775
-  bind_mode: trx
-  system_id: test-client
-  password_env: SMPP_PASSWORD
-test:
-  count: 100
-  timeout: 30s
-  traffic: {mode: constant, tps: 50}
+  sessions:
+    - id: main-trx
+      host: 127.0.0.1
+      port: 2775
+      bind_mode: trx
+      system_id: test-client
+      password_env: SMPP_PASSWORD
 message:
   source: "1000"
   destination: "989121234567"
   text: "Test {{sequence}}"
   request_dlr: true
-completion: {mode: submit_and_dlr, dlr_timeout: 10s}
+traffic:
+  mode: constant
+  count: 100
+  tps: 50
+  distribution: equal
+completion:
+  mode: submit_and_dlr
+  dlr_timeout: 60s
 ```
 
 ```json
@@ -53,16 +84,18 @@ completion: {mode: submit_and_dlr, dlr_timeout: 10s}
   "schema_version": 1,
   "run_id": "example-001",
   "run_status": "completed",
-  "submit_pdus_sent": 100,
-  "submit_resp_ok": 100,
-  "submit_resp_error": 0,
-  "submit_resp_uncertain": 0,
-  "dlr_delivered": 100,
-  "dlr_missing": 0
+  "termination_reason": "completed",
+  "started_at": "2026-11-01T00:00:00Z",
+  "finished_at": "2026-11-01T00:00:02Z",
+  "effective_config": {"redacted": true},
+  "counters": {"logical_messages": 100, "submit_pdus_sent": 100, "submit_resp_ok": 100},
+  "per_session": [],
+  "dlr": {"delivered": 100, "missing": 0},
+  "diagnostics": []
 }
 ```
 
-The invocation, outer schema and exit code meanings are **confirmed in D-034**. Example nested fields and simplified result shape remain illustrative until nested keys/types are approved. The runner must keep logs separate from JSON output; use stable versioned machine-readable results, atomic result-file writes when possible, and redact credentials.
+The invocation, outer schema and exit code meanings are **confirmed in D-034**. The examples illustrate the now approved D-038 schema structure; precise optional advanced field/type spellings remain a normal schema-design and implementation task. The runner must keep logs separate from JSON output; use stable versioned machine-readable results, atomic result-file writes when possible, and redact credentials.
 
 ## DLR request contract (D-030–D-033)
 
@@ -94,4 +127,4 @@ No shell interpolation of untrusted values. The simulator should honor terminati
 
 ## Pending
 
-Finalize exact **nested** JSON/YAML keys/types, public Go API signatures, local persistence paths and deterministic ordering guarantees, all preserving D-034. D-033 DLR message ID must be resolved text-first consistently in every adapter.
+D-038 closes the minimum nested input/output groups, lifecycle methods and strict validation. Remaining engineering: optional Advanced-field type spellings, storage layout and deterministic ordering/cancellation tests, preserving D-034. D-033 DLR message ID must be resolved text-first consistently in every adapter.
