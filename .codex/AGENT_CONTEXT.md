@@ -30,6 +30,10 @@ Read this file before work. The product is **SMPP Test Studio**, a standalone SM
 - **D-034:** single versioned headless runner with JSON/YAML input, JSON output, C++ subprocess support, and exit codes `0/2/3/4/5/6`; no simulator assertions.
 - **D-023:** No implementation authorization. Follow canonical protocol and headless specs, and retain only unresolved detail/tuning in backlog.
 
+## D-035 approved response policy
+
+D-035 fixes the shared three-outcome `deliver_sm_resp` selection model (success, configured error, no response), full DLR override, percentage remainder, optional ACK delay and seeded selection with accurate counters. The detailed timing, allowed status values and scheduling capacity remain unapproved. Do not implement until the owner separately authorizes code.
+
 ## Development discipline
 
 Prefer changes scoped to agreed features; tests and docs updated together. Clearly separate accepted decisions from proposals. Never invent performance PASS/results. Keep config credentials out of VCS and logs. Do not overwrite prior design decisions silently. Favor local repeatable tests.
