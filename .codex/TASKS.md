@@ -17,7 +17,9 @@
 - [x] Confirm DLR **text-first `id:`**, TLV fallback, state parsing, per-segment correlation and 60s drain (**D-033**).
 - [x] Confirm headless outer JSON/YAML+JSON v1 contract and execution exit codes for C++ (**D-034**).
 - [ ] Specify nested config/result keys/types, public Go API method names, Advanced TLV list and vendor interoperability fixture plan within the approved D-032–D-034 boundaries.
-- [ ] Finalize deterministic fault-response policy and all Adaptive Window parameters.
+- [x] Confirm D-035 response selection model.
+- [ ] Finalize remaining D-035 delay, status and capacity parameters.
+- [ ] Finalize Adaptive Window parameters.
 - [ ] Define bounded DLR ID-correlation retention/expiry and local storage/flushing; D-033 already fixes baseline ID and status correlation.
 - [ ] Approve measurable V1 acceptance and benchmark workload.
 
