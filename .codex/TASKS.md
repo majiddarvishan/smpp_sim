@@ -19,7 +19,8 @@
 - [ ] Specify nested config/result keys/types, public Go API method names, Advanced TLV list and vendor interoperability fixture plan within the approved D-032–D-034 boundaries.
 - [x] Confirm D-035 response selection model.
 - [x] Confirm D-036 fixed ACK delay, separate post-selection delay percentage, four error codes, default 10,000 pending ACK limit and controlled `resource_limit` stop.
-- [ ] Finalize Adaptive Window parameters.
+- [x] Confirm D-037 Adaptive Window windows, batch timing, degraded/severe response, zero-window probes, safety cap and finite run deadline.
+- [ ] Specify detailed throughput-pacing parameters for non-Adaptive profiles and supported congestion-status classification/late-response bounded bookkeeping.
 - [ ] Define bounded DLR ID-correlation retention/expiry and local storage/flushing; D-033 already fixes baseline ID and status correlation.
 - [ ] Approve measurable V1 acceptance and benchmark workload.
 
