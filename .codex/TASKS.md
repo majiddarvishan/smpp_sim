@@ -10,7 +10,8 @@
 - [x] Approve **Auto + Manual** message encoding selection (D-026): Auto GSM7 when representable, UCS2 for supported other text; manual GSM7/UCS2/Binary and explicit `data_coding`.
 - [x] Approve **Multipart Auto + Manual** modes (D-027): default UDH for long messages; manual UDH, SAR TLVs, or No automatic splitting; separate logical/PDU counts.
 - [x] Approve **Auto + Manual TON/NPI** selection (D-028) independently for source/destination; no implicit address normalization.
-- [ ] Finalize remaining `submit_sm` and DLR parameters: ambiguous TON/NPI defaults/leading-plus parsing, exact GSM7 packing/DCS interoperability, unsupported Unicode, UDH/SAR byte/reference rules, no-split oversize policy, optional PDU fields, multipart DLR/message ID normalization.
+- [x] Approve Auto TON/NPI normal mapping (D-029): digit-only without `+` => `0/0`, explicit `+` => `1/1`, alphanumeric => `5/0`, no address rewrite.
+- [ ] Finalize remaining `submit_sm` and DLR parameters: malformed-address validation, exact GSM7 packing/DCS interoperability, unsupported Unicode, UDH/SAR byte/reference rules, no-split oversize policy, optional PDU fields, multipart DLR/message ID normalization.
 - [ ] Finalize versioned config and result schema for CLI/Web UI/headless C++/Go integration, **without built-in assertions**.
 - [ ] Finalize deterministic fault-response policy and all Adaptive Window parameters.
 - [ ] Define DLR correlation, storage and error classification details.

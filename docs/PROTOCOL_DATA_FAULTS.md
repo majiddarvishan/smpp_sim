@@ -20,12 +20,12 @@ References for the technical distinction: SMPP v3.4 Issue 1.2 data_coding descri
 ## Approved TON/NPI selection (design, not implemented)
 
 - **Basic default = Auto**; source address and destination address are classified independently.
-- Clear **alphanumeric** address presentation can select `TON=5, NPI=0`. Explicit international-address indication can select `TON=1, NPI=1`. These are examples of intended classification, **not a finalized parser** or a promise that numeric-only input is always international.
-- In ambiguous cases, choose a conservative default; exact values and parsing precedence are **not yet approved**. A number prefix or digit string alone must not trigger unapproved rewriting or normalization.
+- **Confirmed mapping (D-029):** clearly alphanumeric `MyBrand` -> `TON=5, NPI=0`; explicitly international `+989121234567` -> `TON=1, NPI=1`; all digit-only strings without leading `+` (e.g. `989121234567`, `1000`) -> `TON=0, NPI=0`.
+- Digit-only inputs **without** `+` always use the conservative Unknown/Unknown `0/0` default, regardless of numeric length or apparent country prefix.
 - **Advanced/Go/headless:** permit independent explicit overrides for `source_addr_ton`, `source_addr_npi`, `dest_addr_ton`, `dest_addr_npi`; manual fields take precedence over Auto selection.
 - Crucial invariant: TON/NPI is a **PDU metadata decision**. The original configured `source_addr` and `destination_addr` values must be transmitted **without implicit modification**. In particular, the fate of an optional leading `+` belongs to a separate explicit user-controlled normalization policy, if ever approved, not to Auto TON/NPI.
 - Expose resolved TON/NPI and the unchanged addresses in full-detail and structured diagnostics for repeatable C++/Go integration tests. Avoid mandatory full capture in high-performance mode.
-- Finalize parser treatment of a leading `+`, all-digit international-form numbers with no `+`, short codes, prefixes and non-alphanumeric special characters before implementation.
+- Ordinary leading-plus, numeric-only, and short-code mappings are approved. Malformed `+`, punctuation and invalid address validation remain open. No implicit address rewriting is allowed.
 
 ## Approved Multipart SMS policy (design, not implemented)
 

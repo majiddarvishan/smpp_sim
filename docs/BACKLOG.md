@@ -20,7 +20,7 @@ Status: 2026-11-01. Do not treat candidate defaults as approved.
 
 ## Unsettled details to finalize before implementation
 
-1. **SMPP parameters:** SMPP 3.4 only; connection defaults (D-024), optional automatic enquire_link (D-025), Auto + Manual encoding (D-026), multipart mode selection (D-027), and Auto + Manual TON/NPI **selection policy** (D-028) are approved. Open: exact TON/NPI parser/ambiguous numeric defaults and leading-`+` semantics **without altering input address**, unbind timeout, version field encoding, TLV coverage, `message_payload`, validity/schedule format, exact GSM7 packing/byte handling, non-BMP Unicode policy, UCS2/manual mismatch validation, UDH/SAR reference/fragmentation details, no-split oversize behavior and multipart DLR mapping.
+1. **SMPP parameters:** SMPP 3.4 only; connection defaults (D-024), optional automatic enquire_link (D-025), Auto + Manual encoding (D-026), multipart mode selection (D-027), and Auto + Manual TON/NPI **selection policy** (D-028) are approved. Open: malformed-address validation (the normal TON/NPI mapping is fixed in D-029, and addresses are never altered), unbind timeout, version field encoding, TLV coverage, `message_payload`, validity/schedule format, exact GSM7 packing/byte handling, non-BMP Unicode policy, UCS2/manual mismatch validation, UDH/SAR reference/fragmentation details, no-split oversize behavior and multipart DLR mapping.
 2. **Run config schema:** versioned JSON/YAML shape, CLI syntax, Web UI fields, headless result schema, exit-code contract with **no built-in assertions**.
 3. **Traffic math:** precise pacing clock/limits, Adaptive increase/decrease/timeout thresholds, max/initial window defaults, zero-window transition and probe interval/success count, late response bookkeeping, per-session vs global controls.
 4. **Connection lifecycle:** TX rejoin behavior when some TX remain; distinction between temporary RX outage, DLR drain, and all-TX-loss terminal stop; reconnect limits and TRX semantics.
@@ -33,7 +33,7 @@ Status: 2026-11-01. Do not treat candidate defaults as approved.
 
 ## Short next design sequence
 
-- Finalize remaining **submit_sm/DLR protocol details**: unambiguous/ambiguous TON/NPI classification and conservative defaults (Auto+Manual mode already approved), GSM7/UCS2 wire behavior, non-BMP Unicode, multipart UDH/SAR framing and DLR mapping.
+- Finalize remaining **submit_sm/DLR protocol details**: malformed-address validation (Auto+Manual TON/NPI and common defaults already approved), GSM7/UCS2 wire behavior, non-BMP Unicode, multipart UDH/SAR framing and DLR mapping.
 - Freeze minimal JSON/YAML run schema + JSON result contract for C++/Go integration.
 - Freeze Adaptive Window and fault injection parameter semantics.
 - Set objective V1 acceptance tests; only then begin coding in small, tested increments.
