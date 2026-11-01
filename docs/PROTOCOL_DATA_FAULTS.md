@@ -4,7 +4,7 @@
 
 V1 supports plain TCP SMPP client binds TX/RX/TRX, sends `submit_sm` and consumes `submit_sm_resp`. It receives delivery receipts as inbound `deliver_sm` and sends matching `deliver_sm_resp` (same request `sequence_number`). **Delivery report is not an independent SMPP command**. Do not implement MO test flows.
 
-Required submit/message fields include source/destination TON/NPI, addresses, `data_coding`, `esm_class`, `registered_delivery`, message body or payload and optional TLVs. Include GSM7/UCS2/binary and multipart UDH/SAR paths as supported by the target SMPP profile. Default encoding **selection** is now confirmed as Auto (see below); encoding boundaries, validity formatting, TLV catalog and multipart method selection still require protocol-focused design review.
+Required submit/message fields include source/destination TON/NPI, addresses, `data_coding`, `esm_class`, `registered_delivery`, message body or payload and optional TLVs. Include GSM7/UCS2/binary and multipart UDH/SAR paths as supported by the target SMPP profile. Default encoding **selection** and multipart mode selection are confirmed as Auto defaults (see below); exact encoding boundaries, validity formatting, TLV catalog, multipart framing/reference and no-split overlength behavior still require protocol-focused design review.
 
 ## Approved encoding policy (design, not implemented)
 
@@ -16,6 +16,16 @@ Required submit/message fields include source/destination TON/NPI, addresses, `d
 - Apply the same rules through the Go API, CLI, Web UI, JSON/YAML headless runner and data templates. This section is a design choice, **not a finalized config schema**.
 
 References for the technical distinction: SMPP v3.4 Issue 1.2 data_coding description and https://docs.tibco.com/pub/bwsmpp/6.0.3/doc/html/users-guide/message-encoding.htm; GSM 03.38 alphabet and UCS2 mapping: https://developers.sinch.com/docs/sms/smpp/message-encoding.
+
+## Approved Multipart SMS policy (design, not implemented)
+
+- **Default = Auto:** messages requiring segmentation are automatically split with **UDH**, preserving original logical-message identity.
+- **Advanced overrides:** user may explicitly choose `UDH`, `SAR TLVs`, or `No automatic splitting`. For an already-short message, do not add multipart overhead unnecessarily.
+- For UDH segments, document the appropriate UDHI indication in `esm_class`, consistent concatenation reference, total parts/part index, and correctly encoded segment payload. For SAR segments, specify the relevant `sar_msg_ref_num`, `sar_total_segments`, `sar_segment_seqnum` TLVs and validate their consistent values.
+- Count and report **logical messages separately from physical `submit_sm` PDUs/segments**. Each segment has an independent `submit_sm_resp`; never claim all multipart segments succeeded when only some were accepted. DLR correlation for multipart is a separate unresolved detail, especially when SMSCs report per segment versus per logical message.
+- All limits must derive from **actual encoded bytes/septets and multipart overhead**, not character count. Exact thresholds, UDH reference width/rollover and compatibility, `message_payload` use, and GSM7 wire representation remain for protocol-design review.
+- **No automatic splitting** is intended for controlled protocol testing, **not permission for truncation**. Whether oversized payloads are rejected pre-send or represented using a separately explicit `message_payload` option remains to be approved. Do not silently replace, truncate or auto-convert a payload.
+- Same configuration and behavior are used by CLI, embedded Web UI, Go API and JSON/YAML headless runner. Config key names remain undecided.
 
 DLR processing: distinguish `submit_sm_resp` acceptance from terminal delivery; correlate using the returned message ID (and context when necessary); track delivered/failed/unknown, missing, late, duplicate and unmatched receipts. DLR may arrive over a different RX/TRX session from original submit. Message ID normalization rules are a **pending decision** (e.g. format differences across SMSCs).
 
