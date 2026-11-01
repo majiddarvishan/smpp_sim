@@ -1,4 +1,4 @@
-# Acceptance and Validation Plan (proposed, not yet executed)
+# Acceptance and Validation Plan (D-040 approved; not yet executed)
 
 This is a proposal for verifying the agreed scope. **No implementation or test results exist yet.**
 
@@ -27,7 +27,7 @@ These are **acceptance requirements**, not test results.
 
 ## D-035 acceptance requirements (not executed)
 
-Verify exactly one selected response per received `deliver_sm`; unconfigured policy gives immediate `ESME_ROK`; configured error plus no-response percentages never exceed 100%; remaining probability produces success; DLR override replaces generic policy in full, without percentage blending; delays apply only to ACK outcomes; configured random seed allows repeatable selection inputs; no-response produces no delayed ACK; per-policy selected and actually emitted counters remain accurate even with sampling off, and injected response outcomes do not alter delivery status. Exact delay ranges, allowed error statuses and queue capacity remain open design topics.
+Verify exactly one selected response per received `deliver_sm`; unconfigured policy gives immediate `ESME_ROK`; configured error plus no-response percentages never exceed 100%; remaining probability produces success; DLR override replaces generic policy in full, without percentage blending; delays apply only to ACK outcomes; configured random seed allows repeatable selection inputs; no-response produces no delayed ACK; per-policy selected and actually emitted counters remain accurate even with sampling off, and injected response outcomes do not alter delivery status. D-036 already fixes delay defaults, four initial error statuses and delayed-ACK capacity; these are confirmed acceptance requirements.
 
 ## D-036 acceptance requirements (not executed)
 
@@ -76,6 +76,40 @@ Verify independent TX reconnect generations, RX outage Continue/Pause, 120-secon
 - C++ harness (e.g. Google Test) launches headless binary, reads JSON, asserts itself. Repeat with a Python/Java script as interoperability smoke if appropriate.
 - JSON/YAML input parity, consistent structured results, bounded timeouts and cancellation, secret redaction and cleanup.
 - Built-in assertion DSL is absent; framework determines test pass/fail.
+
+## Confirmed V1 acceptance and benchmark gate (D-040)
+
+**Design acceptance criteria confirmed 2026-11-01; no code has been implemented and no tests or benchmarks have been run.** An item is PASS only after evidence from an actual executed check; design approval is not test PASS.
+
+### Functional and cross-language gates
+
+- All specified SMPP 3.4 bind/submit encoding, segmentation, TON/NPI, timeout and negative-status behaviors; D-033 text-first DLR identity, TLV-first delivery state, optional receipt expectations, across-session/per-segment correlation; D-035/D-036 faults; all six traffic modes including D-037 recovery; D-039 reconnect, map capacity, capture and interrupted reports.
+- Automatic tests must demonstrate safe stop, no blind retry or resume, redaction, bounded resources, authorized probe destinations and no accidental live traffic.
+- JSON/YAML strict schema-v1 parity, Go `New/Run/Stop/Close` lifecycle, one headless executable invoked from C++ Google Test or Catch2, stable structured JSON and exit codes. No embedded test assertions or mandatory second service.
+- One local scripted acceptance command and reports are preferred; no GitHub Actions requirement. Functional checks cannot be replaced by a screenshot or narrative.
+
+### Measurable performance and evidence
+
+| Dimension | Confirmed target/reference |
+| --- | --- |
+| Throughput metric | **Actual physical `submit_sm` PDUs transmitted/s**, not logical SMS or configured TPS |
+| Reference host | Linux x86_64; at least 16 logical CPUs, 32 GiB RAM |
+| Network and peer | Loopback or isolated >=1 GbE; independently measured SMPP test peer >60k submit PDUs/s |
+| Scenario | 8 TX/TRX sessions, short fixed GSM7, DLR OFF, High Performance without optional raw capture |
+| Measured duration | 5 minutes steady throughput with 1-second series retained |
+| PASS performance objective | Actual average >=50,000 submit PDUs/s for 5 minutes; no unexplained PDU loss or forced resource stop; peak simulator RSS <8 GiB |
+| Evidence | At least two reproducible runs, host/OS/kernel/Go/CPU, peer capacity, connections, RTT, TPS samples, CPU/RSS/GC, latency and timeout/error counts |
+
+An underpowered/unmeasured peer cannot establish simulator 50k PASS. A benchmark falling short is **not verified/failed**, not silently declared PASS. Batch Adaptive mode is separately measured and is **not** required to reach 50k TPS, since it has a different pacing model.
+
+**Separate DLR load:** 5,000 submit PDUs/s for 3 minutes against a deterministic test peer with known IDs/final receipts; validate exact correlations, ACK/counter correctness, late/unmatched categories and bounded resource use. This does not claim 50k DLR/s.
+
+### Security, distribution and phase gate
+
+- Every run requires a finite count/duration/Stop-at-End dataset, explicitly authorized destination(s), and explicit authorized Adaptive probe target; safe resource stops and potential SMSC charging visibility.
+- Embedded UI listens only on localhost by default. Remote binding and access policies are excluded from automatic exposure until separately reviewed. Secrets through environment and redacted logs/JSON; sanitized local reports and conservative filesystem permissions.
+- One binary plus importable Go package; smoke builds for Linux amd64 and Windows amd64 are the initial release checks. No mandatory broker/database/orchestrator or GitHub Actions.
+- **Design freeze** occurs only after consistency review confirms D-001–D-040, no unresolved P0 product behavior and cross-document agreement. The design freeze **does not authorize implementation** (D-023) and supplies **no evidence** of completed functional/performance acceptance. A future release requires actually executed tests and benchmark evidence or explicit owner-approved performance exception.
 
 ## Performance
 
