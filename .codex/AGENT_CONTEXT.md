@@ -54,6 +54,10 @@ Confirmed: controlled reconnect backoff, returned TX as a new bind generation, D
 
 D-040 confirms automated SMPP/DLR/Fault/Adaptive/recovery/Headless C++ and Go acceptance, 50k *actual physical* submit PDUs/s sustained five minutes on a peer-qualified reference host, separate 5k submit PDUs/s DLR scenario for three minutes, 8 GiB reference RSS target, two reproducible performance runs, finite authorized tests, localhost UI, secret redaction and Linux/Windows amd64 smoke. **These are targets only: none have been executed.** Design freeze requires consistent documents; it never authorizes implementation without separate owner request per D-023.
 
+## V1 frozen design and implementation authorization
+
+As of 2026-11-01, owner decisions D-001–D-040 are CONFIRMED, documentary consistency audit passed, and V1 design is **FROZEN**. See `docs/V1_DESIGN_FREEZE.md`. **Do not write simulator code, create a Go module, execute benchmarks or claim test PASS without separate owner authorization to implement** (D-023). Implementation-oriented engineering details remain unchecked, not owner-level unresolved product decisions. D-040's 50k physical submit PDU/s for five minutes and separate 5k with-DLR PDU/s for three minutes are future measured release gates, not observed performance.
+
 ## Development discipline
 
 Prefer changes scoped to agreed features; tests and docs updated together. Clearly separate accepted decisions from proposals. Never invent performance PASS/results. Keep config credentials out of VCS and logs. Do not overwrite prior design decisions silently. Favor local repeatable tests.
