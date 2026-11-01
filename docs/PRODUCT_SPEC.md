@@ -80,9 +80,9 @@ For inbound `deliver_sm`, select exactly one client response outcome: successful
 3. Step Load.
 4. Burst/Spike.
 5. Unlimited (limited by available resources, in-flight bounds, and safety limits).
-6. Adaptive Window: send a batch up to current window, wait for associated submit responses until a deadline; shrink on congestion/missing responses; grow gradually on successful rounds up to max; allow zero-window Critical Pause and controlled automatic recovery probes.
+6. Adaptive Window: independent per-TX batch controller with D-037 3s decision deadline, severe-degradation Critical Pause, authorized automatic probe recovery, and bounded run-wide outstanding capacity.
 
-Per-session Adaptive Window is independent. Run-wide traffic allocation is configurable: Equal, Adaptive, or Weighted. A global limiter governs capped profiles. Some mode combinations and priority rules are still to be specified explicitly.
+Per-session Adaptive Window is independent. Run-wide traffic allocation is configurable: Equal, Adaptive, or Weighted. A global limiter governs capped profiles. D-037 fixes Adaptive Window behavior: initial 32/max 1,024 PDUs per TX, 3s batch deadline distinct from the 5s submit timeout, healthy p95≤1s, 12.5% minimum-1 increase, half-shrink on degradation, three severe batches to zero, 5s authorized single outstanding probe, two consecutive successful probes to restart at window=1, 8,192 shared outstanding cap, and configurable 10m finite run deadline. Probe traffic is separately observable and part of total PDUs. Detailed behavior: [Traffic Control](TRAFFIC_CONTROL.md#confirmed-adaptive-window-defaults-and-lifecycle-d-037). One primary traffic profile applies per run; distribution selects future work without silently switching algorithms. Other profile tuning remains open.
 
 ## Data generation
 
