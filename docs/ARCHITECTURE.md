@@ -61,6 +61,12 @@ Proposed phases: `CREATED -> CONNECTING -> RUNNING -> SUBMIT_DRAIN -> [DLR_DRAIN
 
 A single failed TX does not stop the run while another TX remains healthy. D-039 confirms that a recovered TX may rejoin as a new bind generation, accepting future messages only; previously ambiguous submits are never replayed. RX reconnection in-process is expected under RX-loss policies. In TRX setups, apply the TX-loss stop rule if all send-capable TRX sessions disappear.
 
+## D-039 reconnect and run lifecycle
+
+- Rebind named TX/RX/TRX sessions with configurable 1/2/4/8/16/30s-capped retry backoff and small jitter; avoid blind retries of permanent authentication errors.
+- Recovered TXs rejoin as new session generations, with reset Adaptive controller and future work only. Initial absence of all TX binds is startup failure (exit 3); loss of all TX after Run starts is `all_tx_unavailable` (exit 4).
+- RX-only loss follows Continue MT or Pause MT; receiver retry continues in-process, buffers stay bounded. The all-TX stop rule takes precedence.
+
 ## State and persistence
 
-Use bounded in-memory running state and a minimal local report/snapshot writer. Do not require relational DB tables. Full capture may use sequential files; high-performance capture is optional/bounded. Document flushing interval and crash data-loss window before implementation. Store no plaintext credentials in logs/reports. Ensure test cancellation closes sockets, drains/terminates goroutines, and releases files without leaks.
+Use bounded in-memory running state and a minimal local report/snapshot writer. Do not require relational DB tables. Full capture may use sequential files; high-performance capture is optional/bounded. D-039 fixes 5s default snapshot flush, High Performance capture, 1,000 sampled PDU details and 512 MiB optional raw capture per Run. Capturing more than the quota truncates optional evidence but never counters. Reports remain local, with no automatic deletion; last successful flush time bounds known crash data loss. Store no plaintext credentials in logs/reports. Ensure test cancellation closes sockets, drains/terminates goroutines, and releases files without leaks.
