@@ -22,7 +22,8 @@
 - [x] Confirm D-036 fixed ACK delay, separate post-selection delay percentage, four error codes, default 10,000 pending ACK limit and controlled `resource_limit` stop.
 - [x] Confirm D-037 Adaptive Window windows, batch timing, degraded/severe response, zero-window probes, safety cap and finite run deadline.
 - [ ] Specify detailed throughput-pacing parameters for non-Adaptive profiles and supported congestion-status classification/late-response bounded bookkeeping.
-- [ ] Define bounded DLR ID-correlation retention/expiry and local storage/flushing; D-033 already fixes baseline ID and status correlation.
+- [x] Confirm D-039 connection recovery/rejoin, RX loss, 120s DLR retention and 1,000,000 mapping cap, local capture/snapshots and no automatic cleanup.
+- [ ] Specify low-level reconnect-generation fencing, bounded map eviction mechanics, optional artifact serialization and vendor fixtures; preserve confirmed D-039 policy.
 - [ ] Approve measurable V1 acceptance and benchmark workload.
 
 ### P1 — Implementation *after* user requests it
