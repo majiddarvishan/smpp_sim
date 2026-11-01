@@ -29,6 +29,10 @@ Single process, one active Test Run, multiple sessions, local reports. No Redis/
 
 Actual package names may be simplified further during implementation.
 
+## Confirmed adapter invariants
+
+D-032 and D-033 fix a consistent submit and DLR contract across CLI, Web UI, Go API and headless. **DLR text `id:` takes precedence over TLV `receipted_message_id`**, preserving conflicts in diagnostics; status `message_state` TLV remains first independently. D-034 fixes versioned headless outer input/output and exit codes, with no separate simulation engine. This is approved design, not implementation.
+
 ## Critical invariants
 
 - A session has safe serialized socket writes and an independent read loop; `deliver_sm_resp` is not starved behind large submit queues.
