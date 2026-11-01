@@ -13,6 +13,8 @@ A lightweight, maintainable **SMPP client simulator** for manual testing, bulk/l
 - Outbound MT `submit_sm`, `submit_sm_resp`, concurrent delivery receipts (`deliver_sm`/`deliver_sm_resp`), and configurable response fault injection. **No MO test scenarios.**
 - One active Test Run per instance, multiple SMPP sessions; strong preference for simplicity over operational feature growth.
 
+**Confirmed as of 2026-11-01:** D-032 (submit defaults and encoding/fragmentation), D-033 (**DLR text-first `id:`**, TLV fallback, 60s drain), D-034 (headless JSON/YAML/JSON contract and execution exit codes). These are documented decisions, **not implemented features**.
+
 ## Documents
 
 | Document | Purpose |
