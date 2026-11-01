@@ -42,6 +42,14 @@ Verify Fixed ACK delay disabled at 0ms by default, selectable only after success
 - Accurate accounting of sent PDUs, accepted responses, pending/uncertain and actual TPS; no duplicate resend of an uncertain submit.
 - Ensure in-flight and capture limits prevent unbounded memory usage.
 
+## D-037 Adaptive Window acceptance requirements (not executed)
+
+- For each TX/TRX, verify initial=32, max=1,024, independent window state, healthy p95<=1s, 3s batch decision deadline separate from the fixed 5s per-PDU submit-response timer, 0ms inter-batch delay, increase by max(1,floor(window/8)) and degrade to max(1,floor(window/2)).
+- Show three **consecutive severe** rounds cause window zero; ordinary negative non-throttling statuses or p95 degradation reduce but do not increment severe streak. Test a non-severe round resetting the severe streak, including a batch with out-of-order responses.
+- Pending at 3s must not be miscounted as 5s submit timeout; late responses cannot retroactively change old batch window decisions or match a later request; no automatic retransmission of ambiguous submit PDUs. Outstanding requests from old batches consume per-session and global capacity until resolved/individual timeout.
+- At zero, no normal submit dispatch; at most one authorized recovery probe outstanding every 5s per session, two consecutive successful in-time responses reopen at window=1; bad/expired probe resets streak. Probes count in physical TPS, safety budgets and separate metrics, may be chargeable, and cannot use unapproved live destinations.
+- Shared global cap=8,192 pending PDUs, capped-rate and independently selected Equal/Adaptive/Weighted distribution parity, one primary traffic profile, TX-one-loss continuation, all-TX-loss stop, RX-only-loss Continue/Pause, uninterrupted DLR ACK handling while paused, and bounded finite Adaptive default run deadline=10m (configurable). Distinguish run deadline from completed normal target and emit the appropriate D-034 execution reason/exit code. No performance PASS claim from these design cases.
+
 ## Failure/lifecycle
 
 - One TX lost while others remain: continue run with remaining sessions.
