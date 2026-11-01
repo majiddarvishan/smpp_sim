@@ -59,7 +59,7 @@ Proposed phases: `CREATED -> CONNECTING -> RUNNING -> SUBMIT_DRAIN -> [DLR_DRAIN
 - `INTERRUPTED`: detected after a process crash/restart; never continue the old Test Run.
 - `ERROR`: config/infrastructure/other terminal failure.
 
-A single failed TX does not stop the run while another TX remains healthy. Whether previously lost TX sessions may rejoin the active pool is **not yet specified**; no replay of old submits is allowed. RX reconnection in-process is expected under RX-loss policies. In TRX setups, apply the TX-loss stop rule if all send-capable TRX sessions disappear.
+A single failed TX does not stop the run while another TX remains healthy. D-039 confirms that a recovered TX may rejoin as a new bind generation, accepting future messages only; previously ambiguous submits are never replayed. RX reconnection in-process is expected under RX-loss policies. In TRX setups, apply the TX-loss stop rule if all send-capable TRX sessions disappear.
 
 ## State and persistence
 
