@@ -23,6 +23,13 @@ Read this file before work. The product is **SMPP Test Studio**, a standalone SM
 - TLS/query/cancel/replace are backlog.
 - No mandatory CI workflow (especially GitHub Actions), large orchestrator, or generalized production SMSC product.
 
+## Latest confirmed decisions (2026-11-01)
+
+- **D-032:** strict preserved Basic addresses, `submit_sm` defaults, GSM7 unpacked/UCS2 BMP/binary wire formats, 16-bit default and 8-bit optional UDH, SAR/no-split/explicit payload handling.
+- **D-033:** DLR message ID **text `id:` first**, then `receipted_message_id` TLV fallback; text ID wins on conflicting values with diagnostics. Delivery state is independently `message_state` TLV-first, then text `stat:` fallback. Per-segment matching, 60s drain default, conditional/vendor receipt rules.
+- **D-034:** single versioned headless runner with JSON/YAML input, JSON output, C++ subprocess support, and exit codes `0/2/3/4/5/6`; no simulator assertions.
+- **D-023:** No implementation authorization. Follow canonical protocol and headless specs, and retain only unresolved detail/tuning in backlog.
+
 ## Development discipline
 
 Prefer changes scoped to agreed features; tests and docs updated together. Clearly separate accepted decisions from proposals. Never invent performance PASS/results. Keep config credentials out of VCS and logs. Do not overwrite prior design decisions silently. Favor local repeatable tests.
