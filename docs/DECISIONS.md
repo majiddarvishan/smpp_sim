@@ -38,6 +38,10 @@ Recorded from product design discussion through **2026-11-01**. **Confirmed** = 
 
 | D-031 | CONFIRMED | DLR Request toggle: OFF=`0x00`, ON=`0x01` (terminal success or failure). Advanced supports `0x02` (failure only) and explicit raw `0x03` for **vendor-specific success-only testing**. In **SMPP 3.4**, `0x03` is **reserved**, not a standards-defined success-only option (SMPP v3.4 Issue 1.2 §5.2.17). Show a compatibility warning; never silently rewrite `0x03` or assume the SMSC honors it. SMPP 3.4 remains the sole V1 protocol. |
 
+| D-032 | CONFIRMED | Normal `submit_sm` defaults: empty `service_type`, `schedule_delivery_time`, `validity_period`; zero `esm_class` except UDH UDHI, `protocol_id`, `priority_flag`, `replace_if_present_flag`, `sm_default_msg_id`, no extra TLVs; bind version `0x34`. Strict Basic unchanged ASCII addresses max 20 octets, Advanced noncanonical printable ASCII with explicit TON/NPI. GSM7 default unpacked/DCS `0x00`; UCS2 strict BMP UTF-16BE/`0x08`; binary raw/`0x04`. Auto UDH 16-bit reference, optional 8-bit UDH or SAR, max 255 segments. No-split max 254 `short_message` octets; larger requires explicit `message_payload`. Full policy in [protocol](PROTOCOL_DATA_FAULTS.md#confirmed-submit_sm-defaults-d-032). |
+| D-033 | CONFIRMED | **DLR `message_id` text-first:** parse `id:` inside `deliver_sm.short_message` first; fallback to `receipted_message_id` TLV only if no usable text ID. On conflict **text ID wins** and both values are logged. **Delivery state independently TLV-first** (`message_state`, fallback text `stat:`). Exact opaque case-sensitive cross-session ID matching, optional explicit vendor normalization, ambiguity on ID collisions; per-segment default. `0x01` requests final receipt on accepted identifiable submits; conditional `0x02` and reserved vendor `0x03` create no guaranteed receipt and no fabricated Missing. DLR drain defaults 60s, configurable. Full policy in [protocol](PROTOCOL_DATA_FAULTS.md#confirmed-dlr-correlation-and-lifecycle-d-033). |
+| D-034 | CONFIRMED | One noninteractive headless executable: `smpp-studio run --headless --config <path.json|path.yaml> --result <path.json>` with JSON/YAML input and JSON output `schema_version: 1`, explicit finite execution, redacted structured results, no built-in assertions; C++ invokes as subprocess. Top-level config/result groups fixed and exit codes `0/2/3/4/5/6` express execution status, not framework verdict. Exact nested keys and Go API signatures remain to design. Full contract in [headless](HEADLESS_INTEGRATION.md#confirmed-headless-v1-contract-d-034). |
+
 ## Interpretation notes
 
 - SMPP DLR is ordinarily carried inside `deliver_sm`. D-020 does not add an independent `delivery_report` PDU or MO feature.
@@ -48,6 +52,8 @@ Recorded from product design discussion through **2026-11-01**. **Confirmed** = 
 - D-028 selects **TON/NPI metadata only**, not rewriting addresses. The mapping for digit-only values without `+` is now fixed as Unknown/Unknown (0/0); malformed input validation remains open.
 - D-027 specifies **default automatic UDH fragmentation** as a product choice, not universal SMSC compatibility. **No automatic splitting** is an explicit test mode, not permission to truncate or silently alter long payloads.
 - D-026 specifies the **product default selection policy**, not an SMPP-standard default: `data_coding=0x00` signals the SMSC default alphabet and does not guarantee the SMSC's wire GSM7 packing assumptions. `0x08` is the usual UCS2 indicator. Auto must not silently corrupt characters; exact implementation semantics remain pending.
+
+**Confirmation (2026-11-01):** Owner confirmed D-032–D-034; the text-first ID precedence in D-033 was corrected before initial confirmation in the register. Prior TLV-first draft was never a confirmed decision. D-023 design-only restriction remains in force.
 
 ## Future entries
 
