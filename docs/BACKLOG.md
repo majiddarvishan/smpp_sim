@@ -55,3 +55,37 @@ The owner explicitly **CONFIRMED D-037**. Its numeric controller defaults, batch
 ## D-038 design closure — 2026-11-01
 
 The owner authorized continuing with the previously offered D-038 package. **D-038 is CONFIRMED** in [DECISIONS.md](DECISIONS.md) and its authoritative full contract is now in [HEADLESS_INTEGRATION.md](HEADLESS_INTEGRATION.md#confirmed-nested-headless-and-go-api-v1-d-038). No legacy `test` group; strict schema v1 with `connection.sessions`, `message`, `traffic`, `completion`, optional `capture`/`faults`/`seed`, finite runs, redacted structured JSON, D-034 execution exit codes and four-operation Go library. C++ invokes the shared binary as subprocess. **No code authorized.**
+
+## Candidate D-039 — Connection recovery, DLR retention and local reports (PENDING OWNER APPROVAL)
+
+**Not confirmed.** One proposed V1 bundle for owner review. This honors the already-confirmed D-013/D-014/D-016/D-017/D-033/D-034/D-036/D-037/D-038; there is **no code authorization**.
+
+### Connection lifecycle and reconnect policy
+
+- For each named TX/RX/TRX session (D-038), reconnect and re-bind inside the same still-running Test Run, with default exponential retry intervals of **1s, 2s, 4s, 8s, 16s, then 30s capped**, configurable and with small jitter to avoid synchronized retries. A permanent bind-credential rejection is recorded as a configuration/authentication diagnostic and is not retried blindly.
+- **If one TX/TRX fails**, isolate it and continue sending through other healthy TX/TRX connections according to the selected distribution mode. If it reconnects while another sender remains healthy, rejoin it as a **new bound session generation**, reset the Adaptive controller state for that generation, and assign only *new future messages*. Prior uncertain submits are reported but **never resent**. This preserves D-017 and D-037.
+- **If every send-capable session is unavailable at startup**, report startup/connect/bind failure (D-034 exit **3**). If the Test Run had started and **all TX sessions later become unavailable**, terminate immediately with `all_tx_unavailable` (exit **4**) instead of waiting for reconnect. Partial evidence is retained.
+- If all RX-capable sessions fail but at least one TX is still healthy, follow D-016's per-run **Continue MT** or **Pause MT** policy. In Pause MT, stop new normal generation/dispatch (no unbounded buffering); keep receiver reconnect attempts running until an RX-capable session returns or a run deadline/stop occurs. A TRX session counts toward both roles. All-TX stop precedence still applies.
+- Track per-binding bind attempts/successes/failures, disconnect reason, generation number, downtime, and login redaction. Reconnect never silently changes system_id, credentials, addresses or message-routing policy.
+
+### Bounded DLR correlation and late receipts
+
+- D-033's **text-first DLR `id:`** (TLV ID fallback) is unchanged. Correlation is scoped to a Test Run, across all receiver sessions, with immutable submitted segment identity and explicit handling of duplicate/ambiguous IDs. Never assume submit success means delivered.
+- Proposed per-accepted, identifiable segment correlation retention is **120s from accepted `submit_sm_resp`**, configurable and no less than the run's DLR drain default (**60s**). While the test is running, entries expire from the bounded active ID map; after expiration, arriving receipts become **late/unmatched**, never guessed into an unrelated message. Preserve aggregate resolved/missing/expired metrics so capture sampling does not affect totals. Conditional/vendor DLRs (`registered_delivery=0x02/0x03`) do not become guaranteed Missing on expiry.
+- Default maximum active correlation entries **1,000,000 per Test Run**, configurable. Do **not** silently evict expected DLRs or treat the absence of a matching ID as delivery failure. If the configured active-map capacity is exhausted, end the run in a controlled way with `resource_limit` and partial evidence (D-034 runtime exit 4). Default DLR request remains OFF, so high-throughput submit-only runs do not need a correlation entry for every message.
+- 60s DLR drain after submit completion is still the D-033 default. Stop scheduling new sends in drain; accept DLRs and send ACKs for the allowed drain window. Termination does not imply a global SMSC receipt expiry policy.
+
+### Minimal local evidence and capture
+
+- Default run reporting mode **High Performance**, with accurate atomic aggregate counters and bounded optional sample capture (D-013); Full Detail is an explicit alternative. Limit sample PDU details to **1,000 entries per run** by default, configurable, and raw/full-detail capture to **512 MiB per run** by default, configurable. When capture quota is reached, continue the run but stop **optional raw details**, count `capture_dropped` and set `capture_truncated=true`; do not damage core counters/ID correlation or silently declare complete detail.
+- Keep results **locally only**, no mandatory database/broker. CLI and embedded Web UI use a per-run directory beneath a configurable local `runs/` root; Headless uses the explicit D-034/D-038 `--result` file and must not secretly write a second result elsewhere. Raw/sampled artifacts are optional and bounded and referenced from the JSON result when enabled.
+- Proposed periodic report/snapshot flush **every 5s**, configurable; finish with atomic replacement where supported and explicit error reporting when the final result cannot be published. After crash/restart, mark the previous run `interrupted` using the available persisted snapshot (D-014), **never auto-resume or resend**. Latest in-memory observations since last successful flush may be lost; record the last successful flush time.
+- **No automatic deletion of run artifacts in V1**, to avoid accidental loss of user's test evidence. Provide explicit manual cleanup; sensitive fields/credentials must always be redacted, filenames sanitized and local permissions conservative. On disk-full/result-write failure, report a runtime/storage diagnostic and preserve remaining evidence where feasible; do not silently continue promising a complete report.
+
+### Checks before implementation
+
+- Verify startup all-TX failure versus runtime all-TX loss, per-TX reconnect generations, new-only traffic after rebind, RX loss Continue/Pause and TRX role overlap; all under bounded run duration.
+- Verify receipt arrival before/after 120s TTL, text/TLV ID conflict, duplicates/ambiguity, DLR drain, DLR OFF high-throughput behavior and configured 1,000,000 correlation-cap stop; no fabricated DLR failure.
+- Verify 5s local snapshot, controlled crash -> `interrupted` without replay, final JSON write attempt/exit behavior, 512 MiB optional capture truncation without changing aggregate counts, no background cleanup or mandatory external storage. These are **planned** acceptance tests only.
+
+**Owner review:** approve/revise/reject D-039 as a single package. Upon approval, add a CONFIRMED register entry and synchronize ARCHITECTURE, PROTOCOL_DATA_FAULTS, PRODUCT_SPEC, ACCEPTANCE, BACKLOG, and .codex. Until then this is only a proposal.
