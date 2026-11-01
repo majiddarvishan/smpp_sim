@@ -68,6 +68,10 @@ The invocation, outer schema and exit code meanings are **confirmed in D-034**. 
 
 Basic DLR toggle: OFF `0x00`, ON `0x01`. Advanced values: `0x02` failure-only and `0x03` vendor-specific success-only compatibility probe (**reserved in SMPP 3.4**). Preserve the raw byte, expose a compatibility warning, and report actual behavior for C++ framework assertions; simulator has no assertions. This does not add SMPP v5 support.
 
+## Resource-limit outcome (D-036)
+
+If delayed `deliver_sm_resp` pending-ACK capacity reaches the configured limit (default 10,000), stop with structured `termination_reason=resource_limit`, preserve partial observations and use D-034 **exit code 4** (runtime could not complete). This is an execution/resource condition, **not** an in-simulator test assertion or an SMSC delivery status; the invoking C++/Go/Python/Java test framework owns the verdict. No new headless service or exit code is introduced.
+
 ## C++ integration contract
 
 The C++ test uses its usual test framework:
