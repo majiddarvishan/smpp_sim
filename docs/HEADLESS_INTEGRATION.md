@@ -105,6 +105,10 @@ Basic DLR toggle: OFF `0x00`, ON `0x01`. Advanced values: `0x02` failure-only an
 
 If delayed `deliver_sm_resp` pending-ACK capacity reaches the configured limit (default 10,000), stop with structured `termination_reason=resource_limit`, preserve partial observations and use D-034 **exit code 4** (runtime could not complete). This is an execution/resource condition, **not** an in-simulator test assertion or an SMSC delivery status; the invoking C++/Go/Python/Java test framework owns the verdict. No new headless service or exit code is introduced.
 
+## D-039 result handling
+
+Headless writes its JSON result to the explicit `--result` location only; optional capture artifacts must be bounded and referenced from the result. Local capture defaults to High Performance with 1,000 samples and a 512 MiB raw limit; report snapshots default to 5s. A restarted process must not resume an interrupted Run. Returned TX binds can rejoin an active Run as a new generation for future traffic only. Startup all-TX bind failure, runtime all-TX loss and correlation `resource_limit` retain their distinct established execution outcomes.
+
 ## C++ integration contract
 
 The C++ test uses its usual test framework:
