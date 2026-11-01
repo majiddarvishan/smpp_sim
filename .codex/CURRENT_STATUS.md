@@ -17,11 +17,12 @@ Phase: **Specification / architecture; docs only**.
 - **D-032 CONFIRMED:** normal `submit_sm`, unchanged Basic ASCII addresses, GSM7 unpacked/UCS2 BMP/binary wire handling, UDH 16-bit default/8-bit and SAR alternatives, no-split and explicit payload.
 - **D-033 CONFIRMED:** DLR message ID from **text `id:` first**, TLV fallback; on conflict text wins with diagnostic, while status independently prefers `message_state` TLV; per-segment correlation and 60s drain.
 - **D-034 CONFIRMED:** v1 versioned headless JSON/YAML and JSON result, finite run, C++ subprocess integration, no assertions, execution exit codes `0/2/3/4/5/6`.
+- **D-035 CONFIRMED:** one of three ACK response outcomes per inbound `deliver_sm`, complete DLR-policy override, error/no-response percentage budgets and success remainder, optional ACK delay and seeded selection. Exact delay parameters, allowed statuses and bounded scheduling remain open.
 - **Design only**: product owner explicitly requested no implementation yet.
 - Key product decisions: `docs/DECISIONS.md`.
 
 ## Next discussion
-D-032–D-034 establish the baseline protocol and headless outer contract. Next design tasks: precise Adaptive Window controls, fault-injection probabilities/action timing, nested headless keys/types, DLR correlation retention and measured acceptance workloads. **No implementation authorized**.
+D-032–D-034 establish the baseline protocol and headless outer contract. Next design tasks: precise Adaptive Window controls, remaining D-035 timing/status/queue bounds, nested headless keys/types, DLR correlation retention and measured acceptance workloads. **No implementation authorized**.
 
 ## Safety/quality notes
 Do not claim runnable code, successful tests, acceptance, or implementation progress until actually executed and verified. Do not add GitHub Actions by default.
