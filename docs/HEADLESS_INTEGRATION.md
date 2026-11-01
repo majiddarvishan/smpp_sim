@@ -65,6 +65,7 @@ No shell interpolation of untrusted values. The simulator should honor terminati
 ## Test-engine design requirements
 
 - Deterministic seeded data generation and selected fault injection.
+- Shared Auto/Manual TON/NPI resolution as the Go and human interfaces; manual source and destination override independently. The configured addresses must not be silently normalized; structured diagnostics should expose effective TON/NPI without requiring full PDU capture.
 - Per-run isolation, no global mutable singleton state, bounded queues, idempotent Close/Stop and goroutine cleanup.
 - Explicit outcome status for normal completion, all-TX-loss stop, cancellation, runtime failure, and after-crash Interrupted (for historical run artifacts).
 - No implicit retry of ambiguous submits and no replay after process restart.
