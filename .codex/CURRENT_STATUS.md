@@ -1,7 +1,7 @@
 # Current Status — smpp_sim
 
 Date: **2026-11-01**
-Phase: **D-001–D-040 confirmed; consistency audit/freeze closeout; docs only**.
+Phase: **V1 DESIGN FROZEN — D-001–D-040 confirmed and consistency-audited; docs only, no implementation authorization**.
 
 ## Facts
 - Repository initialized with a README and persistent product/technical decision documentation.
@@ -27,8 +27,14 @@ Phase: **D-001–D-040 confirmed; consistency audit/freeze closeout; docs only**
 
 - **D-039 CONFIRMED:** controlled reconnection and new TX generations, bounded 120s DLR correlation/1,000,000 mappings, local High Performance reports with 1,000 samples, 512 MiB raw capture and 5s snapshot flush. No automatic artifact deletion, replay or resume.
 
+## Design freeze record
+
+- On 2026-11-01, repository design consistency audit verified exactly one CONFIRMED entry per D-001–D-040, no unchecked P0 owner design decision, valid local documentation links and aligned D-037–D-040 canonical sections. See `docs/V1_DESIGN_FREEZE.md`.
+- **Design FROZEN**, but no Go simulator/CLI/Web UI/headless runner has been built and **no test or benchmark has been executed**; 50k submit PDU/s remains an unverified objective.
+- D-023 still explicitly prohibits implementation until the owner gives a separate request. Engineering detail tasks and P1 implementation checks remain unchecked.
+
 ## Next discussion
-D-001–D-040 establish the owner-approved V1 scope, behavior, security and measurable acceptance. Final consistency audit must precede marking the design FROZEN. Optional Advanced interop extensions and precise engineering implementation choices are not reopened product decisions. **No implementation authorized; no tests or benchmarks executed.**
+D-001–D-040 and the documentary consistency audit are complete: V1 design is **FROZEN**. The next step is **not automatic coding**; wait for separate explicit owner authorization, then implement in small tested increments and measure D-040 acceptance. **No implementation authorized; no tests or benchmarks executed.**
 
 ## Safety/quality notes
 Do not claim runnable code, successful tests, acceptance, or implementation progress until actually executed and verified. Do not add GitHub Actions by default.
