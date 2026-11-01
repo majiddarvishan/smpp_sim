@@ -69,6 +69,10 @@ All timeout values are configurable. Automatic `enquire_link` can be **disabled*
 
 **These are approved design requirements, not implemented features.**
 
+## Confirmed response-policy model (D-035)
+
+For inbound `deliver_sm`, select exactly one client response outcome: successful `deliver_sm_resp`, configured nonzero-status `deliver_sm_resp`, or intentionally no response. Delay is an optional ACK property, not another outcome. Error plus no-response percentages are at most 100%; the remainder is successful ACK. DLR-specific policy fully overrides the generic policy. No configured policy means immediate successful ACK. Configurable seed and accurate selected-versus-emitted counters apply to all adapters. Exact status allowlist, timing and bounded scheduling details are still pending. This does **not** alter the underlying SMSC delivery state or authorize implementation.
+
 ## Traffic profiles — all six in V1
 
 1. Constant TPS.
