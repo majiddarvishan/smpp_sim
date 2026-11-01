@@ -77,6 +77,17 @@ Finite CSV/list data uses two independent per-run switches:
 
 Allow deterministic seed, bounded memory, and disk-backed index or equivalent for large-file shuffle. Stop at dataset exhaustion must be reported distinctly.
 
+## Confirmed fault-injection selection model (D-035)
+
+- Applies **only to the simulator's `deliver_sm_resp`** for an incoming `deliver_sm` on an RX/TRX session; it does not manipulate incoming DLR content, server-originated reports, or SMSC's actual final delivery outcome. No MO testing subsystem is introduced.
+- First classify inbound `deliver_sm` as DLR or non-DLR. A configured DLR-specific response policy **replaces the entire generic `deliver_sm` policy** for classified DLRs; probabilities and delays are not stacked, combined, or inherited. If there is no DLR override, use generic policy; if there is no configured policy at all, return an **immediate `ESME_ROK` ACK**.
+- For each inbound PDU, choose **one and only one** response outcome: (1) successful `deliver_sm_resp` (`ESME_ROK`); (2) negative `deliver_sm_resp` with one explicitly configured nonzero `command_status`; or (3) **No Response** (intentionally do not transmit a `deliver_sm_resp` for that request). Configured error outcomes and No Response are mutually exclusive; their selection probabilities sum to **at most 100%**, and any remainder selects successful ACK. Percentages are probabilities rather than guaranteed per-small-sample quotas.
+- **Delay is an optional property of an ACK** (success or error), not a fourth exclusive response outcome. No Response never schedules a delayed ACK. Exact delayed-ACK selection/values and scheduling semantics are an **open follow-up design decision**.
+- A configurable seed controls selection for reproducible test inputs; observed network timing, remote SMSC response and event scheduling are not guaranteed bitwise deterministic. Maintain accurate independent selected/sent/failed-to-send/error/no-response/delayed and DLR-versus-generic counters in the same core, regardless of Full Detail vs High Performance capture.
+- Keep normal SMPP `deliver_sm_resp` framing and the inbound request's `sequence_number`. Never interpret an injected ACK error as proof of SMSC delivery failure. CLI, Web UI, Headless and Go API share this same selection model.
+
+**Not yet confirmed:** allowed `command_status` values, delay ranges/percentages and exact selection semantics, delayed-response queue and overflow limits, and defaults for those advanced controls. They remain documented in `docs/BACKLOG.md` and must not silently become confirmed.
+
 ## Response fault injection — confirmed
 
 Goal: deliberately control the SMPP **client reply** to received `deliver_sm` (primarily DLR) to test how the **SMSC** responds to ACK errors, delays, or missing replies.
@@ -107,7 +118,7 @@ inbound_faults:
     no_response_percent: 2
 ```
 
-For the example DLR override, 83% success, 10% temporary app error, 5% permanent app error and 2% no response are target selection probabilities. Exact delay syntax, allowed codes, precedence of delayed errors, and behavior for inbound non-DLR `deliver_sm` outside MO scope remain **open for design**.
+For the example DLR override, 83% success, 10% temporary app error, 5% permanent app error and 2% no response are target selection probabilities, **not exact quotas**. D-035 fixes the selection and override policy; delay syntax/selection, supported error-code allowlist, bounded delayed-response scheduling/overflow and specific non-DLR handling details remain open.
 
 ## Capture and completion
 
