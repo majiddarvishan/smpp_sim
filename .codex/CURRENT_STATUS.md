@@ -19,11 +19,12 @@ Phase: **Specification / architecture; docs only**.
 - **D-034 CONFIRMED:** v1 versioned headless JSON/YAML and JSON result, finite run, C++ subprocess integration, no assertions, execution exit codes `0/2/3/4/5/6`.
 - **D-035 CONFIRMED:** one of three ACK response outcomes per inbound `deliver_sm`, complete DLR-policy override, error/no-response percentage budgets and success remainder, optional ACK delay and seeded selection.
 - **D-036 CONFIRMED:** Fixed delay 0ms default, optional independent ACK-delay percentage after outcome selection, configurable 60s default maximum; four initial error codes; default maximum 10,000 pending delayed ACKs and controlled `resource_limit` termination when exhausted. No Response creates no timer.
+- **D-037 CONFIRMED:** independent Adaptive Window defaults (initial 32/max 1,024; 3s batch decision versus 5s submit timeout; p95 1s; +12.5% rounded down, min 1; half-shrink; three consecutive severe batches to window zero; authorized 5s single-flight probes; two successes recover at window 1; 8,192 run-wide pending cap, configurable 10m run deadline). No blind resends; late-response accounting independent of capture.
 - **Design only**: product owner explicitly requested no implementation yet.
 - Key product decisions: `docs/DECISIONS.md`.
 
 ## Next discussion
-D-032–D-034 establish the baseline protocol and headless outer contract. Next design tasks: precise Adaptive Window controls, nested headless keys/types, DLR correlation retention and measured acceptance workloads. **No implementation authorized**.
+D-032–D-034 establish the baseline protocol and headless outer contract. Next design tasks: exact nested Headless/Go API schema, bounded DLR correlation retention and connection lifecycle, and measurable V1 acceptance. D-037's Adaptive controller parameters are now confirmed. **No implementation authorized**.
 
 ## Safety/quality notes
 Do not claim runnable code, successful tests, acceptance, or implementation progress until actually executed and verified. Do not add GitHub Actions by default.
