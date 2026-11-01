@@ -61,11 +61,13 @@ Recorded from product design discussion through **2026-11-01**. **Confirmed** = 
 - The rule to stop on all-TX loss overrides recovery of sending sessions for that run. RX in-process reconnect remains valid where TX is still healthy.
 - Previous examples of Adaptive Window sizes/timers are superseded by the confirmed D-037 values; other unapproved examples remain illustrative. Connection defaults are explicitly approved in D-024. The `submit_sm_resp` timeout and Adaptive Window per-batch deadline are different timers.
 - A successful `submit_sm_resp` is not proof of final SMS delivery.
-- D-028 selects **TON/NPI metadata only**, not rewriting addresses. The mapping for digit-only values without `+` is now fixed as Unknown/Unknown (0/0); malformed input validation remains open.
+- D-028 selects **TON/NPI metadata only**, not rewriting addresses. The mapping for digit-only values without `+` is fixed as Unknown/Unknown (0/0); D-032 confirms the Basic invalid-address rejection baseline. Advanced/vendor variants are separate interoperability work.
 - D-027 specifies **default automatic UDH fragmentation** as a product choice, not universal SMSC compatibility. **No automatic splitting** is an explicit test mode, not permission to truncate or silently alter long payloads.
-- D-026 specifies the **product default selection policy**, not an SMPP-standard default: `data_coding=0x00` signals the SMSC default alphabet and does not guarantee the SMSC's wire GSM7 packing assumptions. `0x08` is the usual UCS2 indicator. Auto must not silently corrupt characters; exact implementation semantics remain pending.
+- D-026 specifies the **product default selection policy**, not an SMPP-standard default: `data_coding=0x00` signals the SMSC default alphabet and does not guarantee the SMSC's wire GSM7 packing assumptions. `0x08` is the usual UCS2 indicator. Auto must not silently corrupt characters; D-032 specifies the initial GSM7/UCS2/binary wire baseline, while vendor interoperability fixtures remain engineering work.
 
 **Confirmation (2026-11-01):** Owner confirmed D-032–D-034; the text-first ID precedence in D-033 was corrected before initial confirmation in the register. Prior TLV-first draft was never a confirmed decision. D-023 design-only restriction remains in force.
+
+**D-040 owner approval (2026-11-01):** acceptance and benchmark criteria are now confirmed; this approval is not a benchmark PASS or implementation authorization. A separately recorded cross-document audit is required before the V1 design is marked FROZEN. Historical earlier row notes about pending D-032/D-036 details are superseded by those later confirmed rows, not still-open product decisions.
 
 ## Future entries
 
