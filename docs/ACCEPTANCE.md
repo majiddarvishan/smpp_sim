@@ -25,6 +25,10 @@ This is a proposal for verifying the agreed scope. **No implementation or test r
 
 These are **acceptance requirements**, not test results.
 
+## D-035 acceptance requirements (not executed)
+
+Verify exactly one selected response per received `deliver_sm`; unconfigured policy gives immediate `ESME_ROK`; configured error plus no-response percentages never exceed 100%; remaining probability produces success; DLR override replaces generic policy in full, without percentage blending; delays apply only to ACK outcomes; configured random seed allows repeatable selection inputs; no-response produces no delayed ACK; per-policy selected and actually emitted counters remain accurate even with sampling off, and injected response outcomes do not alter delivery status. Exact delay ranges, allowed error statuses and queue capacity remain open design topics.
+
 ## Traffic/controller correctness
 
 - Constant, Ramp-up/down, Step, Burst, Unlimited, Adaptive Window each produce correct timing intent and stable observability.
