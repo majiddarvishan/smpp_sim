@@ -2,7 +2,7 @@
 
 A lightweight, maintainable **SMPP client simulator** for manual testing, bulk/load generation, and automated SMSC integration testing.
 
-> **Project status: D-001–D-040 design decisions confirmed. Design-freeze consistency audit in progress; no simulator is implemented yet.**
+> **Project status: V1 DESIGN FROZEN (D-001–D-040 confirmed and consistency-audited). No simulator is implemented; coding requires separate owner authorization.**
 
 ## Agreed principles
 
@@ -25,6 +25,7 @@ A lightweight, maintainable **SMPP client simulator** for manual testing, bulk/l
 | [Protocol, data, faults](docs/PROTOCOL_DATA_FAULTS.md) | PDU/DLR semantics, inputs, fault injection |
 | [Headless integration](docs/HEADLESS_INTEGRATION.md) | Go, C++, Python/Java interoperability |
 | [Acceptance plan](docs/ACCEPTANCE.md) | D-040 approved acceptance requirements; unexecuted |
+| [V1 design freeze](docs/V1_DESIGN_FREEZE.md) | Final consistency audit and explicit no-code authorization boundary |
 | [Decision log](docs/DECISIONS.md) | Confirmed decisions |
 | [Backlog](docs/BACKLOG.md) | Deferred scope and implementation engineering details |
 
