@@ -24,6 +24,14 @@ Required submit/message fields include source/destination TON/NPI, addresses, `d
 - Terminal states: delivered only for `DELIVERED`/`DELIVRD`; failed for `EXPIRED`, `DELETED`, `UNDELIVERABLE`, `REJECTED` and matching text; `ENROUTE` intermediate; `ACCEPTED` and `UNKNOWN` tracked explicitly, not auto-counted as delivered. Preserve raw SMSC state and diagnostic error. Report `unmatched`, `duplicate`, `ambiguous`, `late`, `missing`, `unsolicited`; negative or uncertain submit outcomes are not presumed accepted.
 - Default DLR-drain deadline **60s**, configurable and independent of 5s submit-response timeout. The timeout is an *observation window*, not proof of delivery failure; preserve late/unresolved classification and never retry ambiguous submits.
 
+## Confirmed DLR correlation retention (D-039)
+
+D-039 confirms a configurable **120-second** mapping lifetime from an accepted `submit_sm_resp` with an identifiable message ID. It must not be shorter than the Run's configured DLR drain (default 60 seconds). Received DLRs after expiry are reported as late/unmatched without guessing another identity; keep resolved, expired, duplicate and ambiguity counts even without capture. Text `id:` remains first, with TLV fallback (D-033).
+
+Default maximum active mappings are **1,000,000 per Run**, configurable. At capacity, stop with `resource_limit` and D-034 exit code 4, preserving partial evidence; do not silently evict expected mappings. A DLR-OFF run should not allocate one expected-receipt entry for every submission. Conditional `0x02` and vendor `0x03` do not imply guaranteed Missing outcomes at expiry.
+
+After the submit phase, the approved 60s default DLR drain accepts incoming receipts and sends configured acknowledgments, without new normal submit traffic. Local retention bounds are not proof of SMSC delivery success or failure. No implementation is authorized.
+
 ## Approved encoding policy (design, not implemented)
 
 - **Default `Auto`:** classify the **fully expanded text** against the GSM 03.38 basic alphabet **and extension table**. If every character is representable, select GSM7; otherwise select UCS2 for representable characters (notably Persian). No silent lossy replacement or transliteration.
