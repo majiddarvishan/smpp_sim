@@ -119,6 +119,12 @@ Per-session Adaptive Window is independent. Run-wide traffic allocation is confi
 - If process crashes/restarts, mark formerly active runs **Interrupted**, keep persisted evidence, and never auto-resume. Some counters after last successful flush may be unavailable.
 - One active run per simulator instance; user starts a fresh run for retesting.
 
+## Confirmed D-040 V1 release-acceptance boundaries
+
+V1 design has owner-approved functional, cross-language and measurable benchmark criteria (D-040). The performance target is **50,000 actual physical submit PDUs/s sustained for five minutes** from one simulator instance, benchmarked on a documented Linux reference host with >=16 logical CPUs/32 GiB RAM and an independently verified >60k PDU/s SMSC test peer. Use eight TX/TRX sessions for that benchmark profile only, not the single-TRX Basic default, DLR OFF and no optional raw capture. Peak simulator RSS target <8 GiB; retain one-second TPS distributions and two reproducible runs. Separately validate **5,000 submit PDUs/s with DLRs for three minutes** against a deterministic peer. These are **unverified acceptance targets**, never claims of achieved performance.
+
+Functional gate: all D-001–D-039 protocol, traffic, DLR, Fault Injection, reconnect, headless C++ and Go API behaviors must be exercised by automated tests; safety requires finite/authorized destinations and probes, localhost-default embedded Web UI, redacted environment secrets and bounded local reports. Initial packaging smoke: Linux amd64 and Windows amd64. No GitHub Actions or mandatory server/database. Full acceptance requirements are in [ACCEPTANCE.md](ACCEPTANCE.md#confirmed-v1-acceptance-and-benchmark-gate-d-040). A frozen design does not authorize coding or claim tests passed.
+
 ## Not V1
 
 TLS, `query_sm`, `cancel_sm`, `replace_sm` are **backlog**. MO scenarios are **excluded** rather than deferred by default. No required orchestration services, native C++ SDK, server-side assertions, or automatic restart checkpoints.
