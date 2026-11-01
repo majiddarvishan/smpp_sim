@@ -105,6 +105,12 @@ Per-session Adaptive Window is independent. Run-wide traffic allocation is confi
 - Bounded memory and queues; storage capture must not block the hot path. Report capture overflow explicitly.
 - Persist available run metadata/counters/reports locally with JSON/CSV exports; exact file layout/retention policy pending.
 
+## Confirmed D-039 lifecycle and evidence defaults
+
+- Session reconnect backoff 1s, 2s, 4s, 8s, 16s, 30s capped, configurable. A recovered TX rejoins as a new bind generation, processing future work only. Initial all-TX bind failure exits 3; runtime all-TX loss stops the Run with `all_tx_unavailable` and exits 4.
+- Text-first DLR IDs still apply; retain accepted identifiable segment matching state for 120s by default, no shorter than configured DLR drain, with a configurable cap of 1,000,000 active entries. At cap, stop with `resource_limit`; do not silently evict or invent delivery failures.
+- Local reports default to High Performance, 1,000 optional PDU samples, maximum 512 MiB raw capture, and 5s snapshot flush. Capture truncation changes neither aggregate counters nor DLR correlation. CLI/Web UI use per-run local `runs/`; Headless writes only the explicitly requested result location. No automatic report deletion, resume or submit replay.
+
 ## Run failure/lifecycle
 
 - When one TX session disconnects, continue with other healthy TX sessions; exclude failed TX from normal traffic routing.
