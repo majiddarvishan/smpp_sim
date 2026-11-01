@@ -16,7 +16,8 @@
 - [x] Confirm `submit_sm` defaults, wire encoding, Basic address validation, multipart and no-split/payload rules (**D-032**).
 - [x] Confirm DLR **text-first `id:`**, TLV fallback, state parsing, per-segment correlation and 60s drain (**D-033**).
 - [x] Confirm headless outer JSON/YAML+JSON v1 contract and execution exit codes for C++ (**D-034**).
-- [ ] Specify nested config/result keys/types, public Go API method names, Advanced TLV list and vendor interoperability fixture plan within the approved D-032–D-034 boundaries.
+- [x] Confirm D-038 minimal nested JSON/YAML config/result shapes, strict validation, multiple SMPP sessions, C++ subprocess and four-operation Go lifecycle.
+- [ ] Define optional Advanced config/type fields, advanced SMPP TLV allowlist and vendor interoperability fixtures; preserve confirmed D-034/D-038.
 - [x] Confirm D-035 response selection model.
 - [x] Confirm D-036 fixed ACK delay, separate post-selection delay percentage, four error codes, default 10,000 pending ACK limit and controlled `resource_limit` stop.
 - [x] Confirm D-037 Adaptive Window windows, batch timing, degraded/severe response, zero-window probes, safety cap and finite run deadline.
