@@ -33,6 +33,10 @@ Actual package names may be simplified further during implementation.
 
 D-032 and D-033 fix a consistent submit and DLR contract across CLI, Web UI, Go API and headless. **DLR text `id:` takes precedence over TLV `receipted_message_id`**, preserving conflicts in diagnostics; status `message_state` TLV remains first independently. D-034 fixes versioned headless outer input/output and exit codes, with no separate simulation engine. This is approved design, not implementation.
 
+## D-038 shared public API invariants
+
+The Go core must expose `New(Config)`, `Run(context.Context)`, `Stop`, `Close` with idempotent cleanup; its same validated schema-v1 effective config is used by CLI, embedded Web UI and noninteractive headless. Headless accepts named SMPP `connection.sessions` and never starts an HTTP listener. The process JSON report is redacted and versioned; no assertions are embedded, and no C++ native library or additional service is required. These are design commitments, not code.
+
 ## Critical invariants
 
 - A session has safe serialized socket writes and an independent read loop; `deliver_sm_resp` is not starved behind large submit queues.
