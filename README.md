@@ -2,7 +2,7 @@
 
 A lightweight, maintainable **SMPP client simulator** for manual testing, bulk/load generation, and automated SMSC integration testing.
 
-> **Project status: requirements and architecture design only. No simulator is implemented yet.**
+> **Project status: D-001–D-040 design decisions confirmed. Design-freeze consistency audit in progress; no simulator is implemented yet.**
 
 ## Agreed principles
 
@@ -13,7 +13,7 @@ A lightweight, maintainable **SMPP client simulator** for manual testing, bulk/l
 - Outbound MT `submit_sm`, `submit_sm_resp`, concurrent delivery receipts (`deliver_sm`/`deliver_sm_resp`), and configurable response fault injection. **No MO test scenarios.**
 - One active Test Run per instance, multiple SMPP sessions; strong preference for simplicity over operational feature growth.
 
-**Confirmed as of 2026-11-01:** D-032 (submit defaults and encoding/fragmentation), D-033 (**DLR text-first `id:`**, TLV fallback, 60s drain), D-034 (headless JSON/YAML/JSON contract and execution exit codes). These are documented decisions, **not implemented features**.
+**Confirmed as of 2026-11-01:** D-001–D-040, including D-033 (**DLR text-first `id:`**), D-037 Adaptive recovery, D-038 Headless/Go API, D-039 bounded reconnect/retention/reporting and D-040 objective V1 acceptance. All are **design commitments, not implemented features**.
 
 ## Documents
 
@@ -24,12 +24,12 @@ A lightweight, maintainable **SMPP client simulator** for manual testing, bulk/l
 | [Traffic control](docs/TRAFFIC_CONTROL.md) | Six load patterns; adaptive window; sessions |
 | [Protocol, data, faults](docs/PROTOCOL_DATA_FAULTS.md) | PDU/DLR semantics, inputs, fault injection |
 | [Headless integration](docs/HEADLESS_INTEGRATION.md) | Go, C++, Python/Java interoperability |
-| [Acceptance plan](docs/ACCEPTANCE.md) | Proposed validation requirements |
+| [Acceptance plan](docs/ACCEPTANCE.md) | D-040 approved acceptance requirements; unexecuted |
 | [Decision log](docs/DECISIONS.md) | Confirmed decisions |
-| [Backlog](docs/BACKLOG.md) | Deferred items and unconfirmed details |
+| [Backlog](docs/BACKLOG.md) | Deferred scope and implementation engineering details |
 
 ## Agent workflow
 
 Read [`.codex/AGENT_CONTEXT.md`](.codex/AGENT_CONTEXT.md), [`.codex/CURRENT_STATUS.md`](.codex/CURRENT_STATUS.md), and [`.codex/TASKS.md`](.codex/TASKS.md) before touching implementation.
 
-**Documentation-only bootstrap:** this repository is not yet ready to build or run. Examples in docs are illustrative, not approved configuration schemas or measured benchmark results.
+**Documentation-only bootstrap:** this repository is not yet ready to build or run. The D-038 schema-v1 contract is approved, but examples are **not executable** until implementation. There are no measured benchmark results. D-023 requires separate authorization before coding.
