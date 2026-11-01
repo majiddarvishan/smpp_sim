@@ -86,7 +86,19 @@ Allow deterministic seed, bounded memory, and disk-backed index or equivalent fo
 - A configurable seed controls selection for reproducible test inputs; observed network timing, remote SMSC response and event scheduling are not guaranteed bitwise deterministic. Maintain accurate independent selected/sent/failed-to-send/error/no-response/delayed and DLR-versus-generic counters in the same core, regardless of Full Detail vs High Performance capture.
 - Keep normal SMPP `deliver_sm_resp` framing and the inbound request's `sequence_number`. Never interpret an injected ACK error as proof of SMSC delivery failure. CLI, Web UI, Headless and Go API share this same selection model.
 
-**Not yet confirmed:** allowed `command_status` values, delay ranges/percentages and exact selection semantics, delayed-response queue and overflow limits, and defaults for those advanced controls. They remain documented in `docs/BACKLOG.md` and must not silently become confirmed.
+**D-036 now confirms** the initial error-status allowlist, Fixed ACK delay with a separate after-selection percentage, default disabled/60-second configurable maximum, and default 10,000 queued delayed ACKs with controlled `resource_limit` termination. These are no longer open decisions; nested config naming and low-level scheduling implementation are still to be designed.
+
+## Confirmed fault timing and capacity (D-036)
+
+The owner approved these **V1 design defaults**, extending the D-035 response-selection model; no code is implemented:
+
+- **Delay default:** `0ms` (disabled). The supported timing mode is **Fixed** and configurable; it applies only to a selected ACK action, whether success (`ESME_ROK`) or configured negative status. After D-035 selects an ACK, make an independent percentage-based delay choice among eligible ACKs; it **does not** create a fourth response outcome or change success/error/no-response selection rates. A No Response selection never generates a delayed ACK or a timer.
+- **Delay bound:** maximum configured delay defaults to **60 seconds**, and the bound is configurable. Duration must be nonnegative and cannot exceed its configured maximum. With delay disabled, eligible ACKs are sent without an intentional fault delay. Precise nested config field naming remains part of the headless/API schema work.
+- **Initial supported error status allowlist:** `ESME_RSYSERR`, `ESME_RX_T_APPN`, `ESME_RX_P_APPN`, `ESME_RX_R_APPN`. Validate configured error statuses against these codes, unless a separate future decision extends the list. `ESME_ROK` is the successful-ACK outcome, not a negative-error entry.
+- **Bounded scheduling:** default maximum **10,000 queued delayed ACKs per Test Run**. This is a cap on pending delayed responses, not on total received DLRs or on No Response selections. At cap exhaustion, perform a **controlled run stop** with the observable termination reason `resource_limit`; preserve evidence/counters and ensure socket/goroutine cleanup rather than drop, rewrite or reclassify selected responses to fit capacity. A stopped run must not claim normal completion.
+- The selected vs actually transmitted ACK counters, configured DLR-specific complete override, accurate PDU `sequence_number`, seeded selection, and all other D-035 guarantees remain intact. The stop condition is a simulator resource event, **not an SMSC DLR delivery status**.
+
+**Remaining engineering details are not new product choices:** exact nested JSON/YAML keys/types, low-overhead timer scheduling mechanism, implementation race handling and cancellation cleanup. Avoid an independent timer/goroutine per inbound PDU.
 
 ## Response fault injection — confirmed
 
@@ -118,7 +130,7 @@ inbound_faults:
     no_response_percent: 2
 ```
 
-For the example DLR override, 83% success, 10% temporary app error, 5% permanent app error and 2% no response are target selection probabilities, **not exact quotas**. D-035 fixes the selection and override policy; delay syntax/selection, supported error-code allowlist, bounded delayed-response scheduling/overflow and specific non-DLR handling details remain open.
+For the example DLR override, 83% success, 10% temporary app error, 5% permanent app error and 2% no response are target selection probabilities, **not exact quotas**. D-035 fixes selection/override and D-036 fixes **Fixed** ACK delay after outcome selection, the initial status allowlist and the bounded 10,000-ACK scheduling/`resource_limit` stop. Exact nested config key names, scheduling implementation and non-DLR classification nuances remain to design.
 
 ## Capture and completion
 
