@@ -46,6 +46,10 @@ Independent per-TX/TRX batch windows: initial 32, max 1,024, batch deadline 3s v
 
 Confirmed: one schema-v1 JSON/YAML outer config, strict `connection.sessions` plus `message`/`traffic`/`completion`, optional `capture`/`faults`/`seed`; finite runs, env-only secrets, no legacy `test` group, strict unknown-key rejection. JSON result has D-034 status/reason, redacted config and per-session counters. Go public lifecycle is `New`, `Run(context.Context)`, `Stop`, idempotent `Close`; C++ uses same executable subprocess, no SDK or embedded test assertions. See `docs/HEADLESS_INTEGRATION.md`. No implementation approved.
 
+## D-039 connection and reporting policy
+
+Confirmed: controlled reconnect backoff, returned TX as a new bind generation, DLR 120s TTL/1,000,000-cap, local High Performance reports, 5s snapshots and no automatic report deletion. Never replay uncertain messages or restart interrupted runs.
+
 ## Development discipline
 
 Prefer changes scoped to agreed features; tests and docs updated together. Clearly separate accepted decisions from proposals. Never invent performance PASS/results. Keep config credentials out of VCS and logs. Do not overwrite prior design decisions silently. Favor local repeatable tests.
