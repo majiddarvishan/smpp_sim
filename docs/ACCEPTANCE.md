@@ -42,6 +42,14 @@ Verify Fixed ACK delay disabled at 0ms by default, selectable only after success
 - Accurate accounting of sent PDUs, accepted responses, pending/uncertain and actual TPS; no duplicate resend of an uncertain submit.
 - Ensure in-flight and capture limits prevent unbounded memory usage.
 
+## D-038 Headless/Go API acceptance requirements (not executed)
+
+- Compare identical JSON/YAML configurations with `schema_version=1`, named `connection.sessions`, explicit fixed messages, finite traffic, completion and seed. Reject legacy `test` top-level, unknown fields, duplicate YAML keys, unsupported enum/types, missing/empty sessions and accidental unbounded runs with configuration exit 2 and diagnostics.
+- Validate environment-referenced secrets only, no plaintext config/result/log leakage, one TRX default, RX/TX separated sessions, per-session timers, relative dataset path resolution against the config directory, explicit caller result path and no UI/network listener in headless.
+- Validate UTC RFC3339 time fields, stable millisecond units, redacted effective config, integer logical/physical/per-session/DLR/ACK-fault counters, bounded detail samples and accurate aggregates when capture disabled. Failure must still attempt a structured partial JSON result; output write failure uses exit 6.
+- Exercise exact D-034 codes 0/2/3/4/5/6 independently of SMSC negative statuses and test assertions. Confirm `run_status`/`termination_reason` values and C++ test subprocess integration with safe arguments, deadline, cancellation cleanup.
+- Validate Go lifecycle `New`, `Run(context.Context)`, `Stop`, idempotent `Close`; CLI/Web/headless reuse a common engine with no automatic resend or global mutable per-run singleton. These tests are **planned**, not run.
+
 ## D-037 Adaptive Window acceptance requirements (not executed)
 
 - For each TX/TRX, verify initial=32, max=1,024, independent window state, healthy p95<=1s, 3s batch decision deadline separate from the fixed 5s per-PDU submit-response timer, 0ms inter-batch delay, increase by max(1,floor(window/8)) and degrade to max(1,floor(window/2)).
