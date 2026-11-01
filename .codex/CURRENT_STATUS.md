@@ -24,8 +24,10 @@ Phase: **Specification / architecture; docs only**.
 - **Design only**: product owner explicitly requested no implementation yet.
 - Key product decisions: `docs/DECISIONS.md`.
 
+- **D-039 CONFIRMED:** controlled reconnection and new TX generations, bounded 120s DLR correlation/1,000,000 mappings, local High Performance reports with 1,000 samples, 512 MiB raw capture and 5s snapshot flush. No automatic artifact deletion, replay or resume.
+
 ## Next discussion
-D-032–D-034 establish the baseline protocol and headless outer contract. Next design tasks: connection lifecycle and bounded DLR correlation/storage policy, followed by measurable V1 acceptance and safety boundaries. D-038 now confirms the minimum nested Headless/Go API contract. D-037's Adaptive controller parameters are now confirmed. **No implementation authorized**.
+D-032–D-034 establish the baseline protocol and headless outer contract. Next design tasks: measurable V1 acceptance, benchmark conditions, safety boundaries and final design freeze. D-039 now fixes the connection and bounded DLR/storage policy. D-038 now confirms the minimum nested Headless/Go API contract. D-037's Adaptive controller parameters are now confirmed. **No implementation authorized**.
 
 ## Safety/quality notes
 Do not claim runnable code, successful tests, acceptance, or implementation progress until actually executed and verified. Do not add GitHub Actions by default.
