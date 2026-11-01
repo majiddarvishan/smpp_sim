@@ -24,7 +24,7 @@ Status: 2026-11-01. Do not treat candidate defaults as approved.
 2. **Run config schema:** versioned JSON/YAML shape, CLI syntax, Web UI fields, headless result schema, exit-code contract with **no built-in assertions**.
 3. **Traffic math:** precise pacing clock/limits, Adaptive increase/decrease/timeout thresholds, max/initial window defaults, zero-window transition and probe interval/success count, late response bookkeeping, per-session vs global controls.
 4. **Connection lifecycle:** TX rejoin behavior when some TX remain; distinction between temporary RX outage, DLR drain, and all-TX-loss terminal stop; reconnect limits and TRX semantics.
-5. **DLR handling:** receipt parsing forms, `message_id` normalization, delivery-status mapping, expected receipt eligibility, retention and expiry semantics.
+5. **DLR handling:** DLR request OFF by default with Basic toggle and Advanced override approved (D-030); exact Basic ON bit pattern still to confirm;  receipt parsing forms, `message_id` normalization, delivery-status mapping, expected receipt eligibility, retention and expiry semantics.
 6. **Fault injection:** exact allowed SMPP `command_status` values, percentage sampling and seed isolation, DLR classification, delay/no-response precedence and defaults, log/counter meanings.
 7. **Data:** CSV schema and invalid-row rules, shuffle implementation for huge files, templates and random strategies, safety restrictions on test destinations.
 8. **Storage:** local report files, flush intervals, crash-loss evidence, capture limits and retention; no mandatory DB.

@@ -17,6 +17,13 @@ Required submit/message fields include source/destination TON/NPI, addresses, `d
 
 References for the technical distinction: SMPP v3.4 Issue 1.2 data_coding description and https://docs.tibco.com/pub/bwsmpp/6.0.3/doc/html/users-guide/message-encoding.htm; GSM 03.38 alphabet and UCS2 mapping: https://developers.sinch.com/docs/sms/smpp/message-encoding.
 
+## Approved DLR request policy (design, not implemented)
+
+- Default `submit_sm.registered_delivery=0x00`; Basic has a per-Run Request DLR opt-in. An explicit Advanced full-byte override takes precedence, supporting protocol-specific receipt flags.
+- Exact Basic ON bit pattern is not yet fixed; do not silently assume non-final/intermediate receipt options.
+- Requesting DLR is separate from receiving/ACKing `deliver_sm`, fault injection policy, and completion choice. Submit+DLR completion must not wait for receipts that were never requested; classify any unsolicited receipts separately.
+- Multipart expected DLR semantics (per segment versus logical SMS) are still open. Report actual receipts without inventing delivery confirmation from a successful submit response.
+
 ## Approved TON/NPI selection (design, not implemented)
 
 - **Basic default = Auto**; source address and destination address are classified independently.

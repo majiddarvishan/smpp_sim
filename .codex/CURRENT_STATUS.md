@@ -13,6 +13,7 @@ Phase: **Specification / architecture; docs only**.
 - **Auto + Manual encoding** selection approved in D-026. GSM7/UCS2 wire mapping and unsupported Unicode policy are still open.
 - **Multipart Auto + Manual** choice approved in D-027 (default automatic UDH; Advanced UDH, SAR TLVs, or no splitting). Precise framing and oversize/fragment-specific DLR rules remain open.
 - **TON/NPI Auto + Manual** approved in D-028: independent source/destination classification and overrides; no implicit address modification. Approved D-029: digit-only without `+` uses `0/0`, leading-plus digits use `1/1`, clear alphanumeric uses `5/0`; malformed address validation is still open.
+- DLR requests default OFF (`registered_delivery=0x00`) with per-run Basic toggle and Advanced full-field override, confirmed in D-030. Exact ON value is still open.
 - **Design only**: product owner explicitly requested no implementation yet.
 - Key product decisions: `docs/DECISIONS.md`.
 
