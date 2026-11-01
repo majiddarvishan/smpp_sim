@@ -25,7 +25,7 @@ Status: 2026-11-01. Do not treat candidate defaults as approved.
 3. **Traffic math:** precise pacing clock/limits, Adaptive increase/decrease/timeout thresholds, max/initial window defaults, zero-window transition and probe interval/success count, late response bookkeeping, per-session vs global controls.
 4. **Connection lifecycle:** TX rejoin behavior when some TX remain; distinction between temporary RX outage, DLR drain, and all-TX-loss terminal stop; reconnect limits and TRX semantics.
 5. **Remaining DLR work:** D-033 fixes **text-first `id:` extraction**, TLV fallback, exact ID matching, status mapping, segment-level eligibility and 60s drain without false Missing for conditional/vendor receipts. Still open: bounded ID-correlation retention/expiry after drain and explicit vendor normalization adapters/interoperability fixtures.
-6. **Fault injection:** exact allowed SMPP `command_status` values, percentage sampling and seed isolation, DLR classification, delay/no-response precedence and defaults, log/counter meanings.
+6. **Fault injection:** D-035 confirms the basic three-way ACK response selection, DLR override, percentage semantics and seeded outcomes. Still open: exact allowed statuses, delay parameters, and bounded delayed ACK scheduling.
 7. **Data:** CSV schema and invalid-row rules, shuffle implementation for huge files, templates and random strategies, safety restrictions on test destinations.
 8. **Storage:** local report files, flush intervals, crash-loss evidence, capture limits and retention; no mandatory DB.
 9. **Acceptance:** measurable hardware/conditions for 50k TPS, sustained time, allowed p95/timeout resource use, end-to-end DLR load test workload, cross-platform C++ runner smoke test.
@@ -43,3 +43,7 @@ Status: 2026-11-01. Do not treat candidate defaults as approved.
 ## Confirmed design closure — 2026-11-01
 
 **D-032, D-033 and D-034 are CONFIRMED.** The earlier candidate package is no longer pending; its approved details (including the later owner correction requiring **DLR text-first `id:`**) now live in [Protocol](PROTOCOL_DATA_FAULTS.md), [Headless](HEADLESS_INTEGRATION.md) and [Decision Register](DECISIONS.md). D-023 still prohibits implementation until explicitly authorized.
+
+## D-035 design closure
+
+D-035's response-selection model is confirmed in [DECISIONS.md](DECISIONS.md). Detailed timing, error code selection and bounded scheduling limits remain open. No implementation authorized.
