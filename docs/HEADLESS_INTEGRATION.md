@@ -29,7 +29,7 @@ smpp-studio run --headless --config case.yaml --result result.json
 
 ```yaml
 # Illustrative draft; not an approved config schema
-version: 1
+schema_version: 1
 connection:
   host: 127.0.0.1
   port: 2775
@@ -50,6 +50,7 @@ completion: {mode: submit_and_dlr, dlr_timeout: 10s}
 
 ```json
 {
+  "schema_version": 1,
   "run_id": "example-001",
   "run_status": "completed",
   "submit_pdus_sent": 100,
