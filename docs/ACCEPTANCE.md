@@ -58,6 +58,10 @@ Verify Fixed ACK delay disabled at 0ms by default, selectable only after success
 - At zero, no normal submit dispatch; at most one authorized recovery probe outstanding every 5s per session, two consecutive successful in-time responses reopen at window=1; bad/expired probe resets streak. Probes count in physical TPS, safety budgets and separate metrics, may be chargeable, and cannot use unapproved live destinations.
 - Shared global cap=8,192 pending PDUs, capped-rate and independently selected Equal/Adaptive/Weighted distribution parity, one primary traffic profile, TX-one-loss continuation, all-TX-loss stop, RX-only-loss Continue/Pause, uninterrupted DLR ACK handling while paused, and bounded finite Adaptive default run deadline=10m (configurable). Distinguish run deadline from completed normal target and emit the appropriate D-034 execution reason/exit code. No performance PASS claim from these design cases.
 
+## D-039 planned verification (not executed)
+
+Verify independent TX reconnect generations, RX outage Continue/Pause, 120-second DLR identity retention, default one-million mapping cap, local bounded reports, capture truncation, and five-second snapshots without automatic run replay. These are design requirements, not executed tests.
+
 ## Failure/lifecycle
 
 - One TX lost while others remain: continue run with remaining sessions.
