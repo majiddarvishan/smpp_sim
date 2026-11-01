@@ -26,14 +26,16 @@ Recorded from product design discussion through **2026-11-01**. **Confirmed** = 
 | D-020 | CONFIRMED | Configurable percentage-based fault injection for incoming `deliver_sm` response, with DLR-specific override, status code, delay and no-response options. |
 | D-021 | CONFIRMED | Favor limited dependencies and single active Test Run per instance; avoid complex distributed recovery/orchestration systems. |
 | D-022 | CONFIRMED | **V1 targets SMPP v3.4 only.** Other protocol versions are not included in V1. |
-| D-023 | CONFIRMED | **Design-only phase continues. Do not start implementation until explicitly authorized by the owner.**
+| D-023 | CONFIRMED | **Design-only phase continues. Do not start implementation until explicitly authorized by the owner.** |
+| D-024 | CONFIRMED | V1 connection defaults: **SMPP 3.4**, **TCP**, **TRX**, **1 connection**, **connect timeout 5s**, **bind timeout 10s**, **submit response timeout 5s**, **enquire_link interval 30s**, **enquire_link response timeout 10s**, **empty system_type**, **empty address_range**; all timeout values configurable. |
+| D-025 | CONFIRMED | Automatic `enquire_link` may be disabled for tests; exact config key/syntax remains to be decided. |
 
 ## Interpretation notes
 
 - SMPP DLR is ordinarily carried inside `deliver_sm`. D-020 does not add an independent `delivery_report` PDU or MO feature.
 - Adaptive Window zero does **not** mean no traffic at all: small explicit probes are allowed and reported separately.
 - The rule to stop on all-TX loss overrides recovery of sending sessions for that run. RX in-process reconnect remains valid where TX is still healthy.
-- Previous example values for windows, timeouts, error mix and status/exit codes were **illustrations only**, not approved defaults.
+- Previous examples of Adaptive Window sizes/timers, error distributions and exit codes remain illustrative. Connection defaults are explicitly approved in D-024. The `submit_sm_resp` timeout and Adaptive Window per-batch deadline are different timers.
 - A successful `submit_sm_resp` is not proof of final SMS delivery.
 
 ## Future entries

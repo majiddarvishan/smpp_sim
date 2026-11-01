@@ -6,7 +6,8 @@
 - [x] Record approved scope and decisions in repository.
 - [x] Establish `.codex` and docs as durable context.
 - [x] Select protocol version for V1: **SMPP 3.4 only**.
-- [ ] Finalize SMPP session fields/defaults (TCP bind modes; credentials; TON/NPI; timers; enquire_link).
+- [x] Approve connection defaults: SMPP 3.4, TCP, TRX, one session, 5s connect/10s bind/5s submit-response timeouts, 30s enquire_link interval/10s response timeout, empty system_type/address_range, configurable timers and disable-able automatic enquire_link.
+- [ ] Finalize remaining `submit_sm` and DLR parameters: TON/NPI, encoding, multipart, optional PDU fields and message ID normalization.
 - [ ] Finalize versioned config and result schema for CLI/Web UI/headless C++/Go integration, **without built-in assertions**.
 - [ ] Finalize deterministic fault-response policy and all Adaptive Window parameters.
 - [ ] Define DLR correlation, storage and error classification details.

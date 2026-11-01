@@ -21,7 +21,25 @@ A lightweight SMPP **client** simulator that can send individual and bulk MT mes
 ## SMPP functions in V1
 
 - **SMPP v3.4 only** for V1. Plain TCP connections with configurable host/port, system ID/password, `bind_transmitter`, `bind_receiver`, and `bind_transceiver` (TX/RX/TRX).
-- Multiple concurrent sessions, lifecycle visibility, `enquire_link`, bind/rebind and timeouts; TX and DLR RX can be separate or TRX.
+- Multiple concurrent sessions, lifecycle visibility, optional automatic `enquire_link`, bind/rebind and timeouts; TX and DLR RX can be separate or TRX.
+
+### Approved connection defaults
+
+| Setting | Default |
+| --- | --- |
+| SMPP version | 3.4 |
+| Transport | TCP (TLS deferred) |
+| Bind mode | TRX |
+| Connection count | 1 |
+| Connect timeout | 5s |
+| Bind timeout | 10s |
+| Submit response timeout | 5s |
+| Enquire Link interval | 30s |
+| Enquire Link response timeout | 10s |
+| System Type (`system_type`) | Empty |
+| Address Range (`address_range`) | Empty |
+
+All timeout values are configurable. Automatic `enquire_link` can be **disabled** (while inbound protocol handling still works). Host/port/credentials must be configured, not assumed. The 5-second per-submit response timeout differs from the Adaptive Window **batch deadline**, for which defaults are not yet approved. Config field names and disabled-value representation are not finalized.
 - `submit_sm` creation with primary SMPP fields (TON/NPI, `esm_class`, `registered_delivery`, `data_coding`, validity/scheduling fields where applicable, and configurable TLVs as supported).
 - Fixed and templated message content; GSM7/UCS2/binary cases, short and multipart UDH/SAR test cases.
 - Concurrent `submit_sm_resp` matching by `sequence_number`, timeouts, negative statuses, and late responses. **Never blindly retry an uncertain submit.**

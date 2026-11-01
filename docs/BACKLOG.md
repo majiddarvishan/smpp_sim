@@ -20,7 +20,7 @@ Status: 2026-11-01. Do not treat candidate defaults as approved.
 
 ## Unsettled details to finalize before implementation
 
-1. **SMPP parameters:** SMPP version is locked to **3.4**; finalize system type/address range, TON/NPI defaults, `enquire_link`/bind/unbind timeouts, `interface_version`, configured TLV coverage, `message_payload`, validity/schedule time format and encoding/multipart policy.
+1. **SMPP parameters:** SMPP 3.4 only; basic connection defaults (D-024) and optional disabling of automatic enquire_link (D-025) are approved. Remain open: unbind timeout, TON/NPI defaults, detailed version field encoding, TLV coverage, `message_payload`, validity/schedule time format, encoding/multipart policy.
 2. **Run config schema:** versioned JSON/YAML shape, CLI syntax, Web UI fields, headless result schema, exit-code contract with **no built-in assertions**.
 3. **Traffic math:** precise pacing clock/limits, Adaptive increase/decrease/timeout thresholds, max/initial window defaults, zero-window transition and probe interval/success count, late response bookkeeping, per-session vs global controls.
 4. **Connection lifecycle:** TX rejoin behavior when some TX remain; distinction between temporary RX outage, DLR drain, and all-TX-loss terminal stop; reconnect limits and TRX semantics.
@@ -33,7 +33,7 @@ Status: 2026-11-01. Do not treat candidate defaults as approved.
 
 ## Short next design sequence
 
-- Agree exact **SMPP connection options** and defaults, keeping advanced options collapsible in UI.
+- Finalize remaining **submit_sm/DLR protocol parameters** including TON/NPI and encoding/multipart while keeping advanced options collapsible in UI.
 - Freeze minimal JSON/YAML run schema + JSON result contract for C++/Go integration.
 - Freeze Adaptive Window and fault injection parameter semantics.
 - Set objective V1 acceptance tests; only then begin coding in small, tested increments.
