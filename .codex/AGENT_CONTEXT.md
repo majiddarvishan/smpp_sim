@@ -42,6 +42,10 @@ Confirmed: ACK Fixed delay defaults to 0ms (disabled) and uses a separate post-o
 
 Independent per-TX/TRX batch windows: initial 32, max 1,024, batch deadline 3s versus per-submit response timeout 5s, healthy p95<=1s, step increase max(1,floor(window/8)), degrade half, three severe consecutive rounds to zero, 5s single-flight authorized probes and two successive OK responses reopen at window=1. Shared maximum 8,192 pending PDUs including probes and configurable 10m finite Adaptive run deadline. Correct bounded late response tracking; no blind resend; all TX loss stops the run, RX-only loss follows D-016. See `docs/TRAFFIC_CONTROL.md`. No implementation is authorized.
 
+## D-038 headless V1 contract
+
+Confirmed: one schema-v1 JSON/YAML outer config, strict `connection.sessions` plus `message`/`traffic`/`completion`, optional `capture`/`faults`/`seed`; finite runs, env-only secrets, no legacy `test` group, strict unknown-key rejection. JSON result has D-034 status/reason, redacted config and per-session counters. Go public lifecycle is `New`, `Run(context.Context)`, `Stop`, idempotent `Close`; C++ uses same executable subprocess, no SDK or embedded test assertions. See `docs/HEADLESS_INTEGRATION.md`. No implementation approved.
+
 ## Development discipline
 
 Prefer changes scoped to agreed features; tests and docs updated together. Clearly separate accepted decisions from proposals. Never invent performance PASS/results. Keep config credentials out of VCS and logs. Do not overwrite prior design decisions silently. Favor local repeatable tests.
