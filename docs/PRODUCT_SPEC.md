@@ -20,7 +20,7 @@ A lightweight SMPP **client** simulator that can send individual and bulk MT mes
 
 ## SMPP functions in V1
 
-- Plain TCP SMPP connections with configurable host/port, system ID/password, `bind_transmitter`, `bind_receiver`, and `bind_transceiver` (TX/RX/TRX).
+- **SMPP v3.4 only** for V1. Plain TCP connections with configurable host/port, system ID/password, `bind_transmitter`, `bind_receiver`, and `bind_transceiver` (TX/RX/TRX).
 - Multiple concurrent sessions, lifecycle visibility, `enquire_link`, bind/rebind and timeouts; TX and DLR RX can be separate or TRX.
 - `submit_sm` creation with primary SMPP fields (TON/NPI, `esm_class`, `registered_delivery`, `data_coding`, validity/scheduling fields where applicable, and configurable TLVs as supported).
 - Fixed and templated message content; GSM7/UCS2/binary cases, short and multipart UDH/SAR test cases.

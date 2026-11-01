@@ -5,7 +5,8 @@
 ### P0 — Design before code
 - [x] Record approved scope and decisions in repository.
 - [x] Establish `.codex` and docs as durable context.
-- [ ] Finalize SMPP session fields/defaults (TCP bind modes; credentials; TON/NPI; timers; enquire_link; SMPP version).
+- [x] Select protocol version for V1: **SMPP 3.4 only**.
+- [ ] Finalize SMPP session fields/defaults (TCP bind modes; credentials; TON/NPI; timers; enquire_link).
 - [ ] Finalize versioned config and result schema for CLI/Web UI/headless C++/Go integration, **without built-in assertions**.
 - [ ] Finalize deterministic fault-response policy and all Adaptive Window parameters.
 - [ ] Define DLR correlation, storage and error classification details.

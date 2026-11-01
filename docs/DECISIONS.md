@@ -25,6 +25,8 @@ Recorded from product design discussion through **2026-11-01**. **Confirmed** = 
 | D-019 | CONFIRMED | **No assertions within simulator.** External testing framework (including C++ Google Test etc.) owns pass/fail checks. |
 | D-020 | CONFIRMED | Configurable percentage-based fault injection for incoming `deliver_sm` response, with DLR-specific override, status code, delay and no-response options. |
 | D-021 | CONFIRMED | Favor limited dependencies and single active Test Run per instance; avoid complex distributed recovery/orchestration systems. |
+| D-022 | CONFIRMED | **V1 targets SMPP v3.4 only.** Other protocol versions are not included in V1. |
+| D-023 | CONFIRMED | **Design-only phase continues. Do not start implementation until explicitly authorized by the owner.**
 
 ## Interpretation notes
 

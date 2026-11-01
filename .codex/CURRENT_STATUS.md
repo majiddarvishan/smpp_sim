@@ -8,6 +8,8 @@ Phase: **Specification / architecture; docs only**.
 - No Go module, CLI/Web UI, SMPP engine, headless runner, tests or benchmarks have been implemented.
 - Performance target of 50k `submit_sm` PDUs/s is a future benchmark objective, not demonstrated.
 - Product owner asked for light maintainable design, automated integration including C++, and no built-in assertions.
+- SMPP **3.4 only** is confirmed for V1.
+- **Design only**: product owner explicitly requested no implementation yet.
 - Key product decisions: `docs/DECISIONS.md`.
 
 ## Next discussion
