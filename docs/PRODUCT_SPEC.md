@@ -15,7 +15,7 @@ A lightweight SMPP **client** simulator that can send individual and bulk MT mes
 
 1. CLI: manual one-message and bulk use.
 2. Embedded Web UI: create/control one active run, monitor connections, chart metrics, inspect bounded PDU samples, retrieve reports.
-3. Headless runner: load JSON/YAML config, run without interactive CLI/UI or web listener, emit JSON result and meaningful process status for integration tests in C++, Python, Java, etc.
+3. Headless runner: use the confirmed D-034/D-038 single executable and strict schema-v1 JSON/YAML with `connection.sessions` (named TX/RX/TRX), fixed/binary/dataset input inside `message`, finite `traffic`, `completion`, optional bounded `capture`/`faults` and seed. Emit redacted structured JSON with D-034 execution exit codes for C++, Python, Java, etc., without CLI prompts/UI or assertions.
 4. Importable Go API: direct programmatic test setup, `context` timeout/cancellation, send/wait/stop, structured results. CLI/UI/headless must reuse this engine.
 
 ## SMPP functions in V1
@@ -72,6 +72,10 @@ All timeout values are configurable. Automatic `enquire_link` can be **disabled*
 ## Confirmed response-policy model (D-035)
 
 For inbound `deliver_sm`, select exactly one client response outcome: successful `deliver_sm_resp`, configured nonzero-status `deliver_sm_resp`, or intentionally no response. Delay is an optional ACK property, not another outcome. Error plus no-response percentages are at most 100%; the remainder is successful ACK. DLR-specific policy fully overrides the generic policy. No configured policy means immediate successful ACK. Configurable seed and accurate selected-versus-emitted counters apply to all adapters. D-036 additionally fixes **Fixed delay off by default (0ms)**, independently selected for ACKs after the D-035 outcome using a separate configured percentage, configurable 60s default delay maximum, four initial error statuses (`ESME_RSYSERR`, `ESME_RX_T_APPN`, `ESME_RX_P_APPN`, `ESME_RX_R_APPN`), default maximum **10,000 queued delayed ACKs per run**, and controlled `resource_limit` termination at capacity. No Response has no delayed timer. This does **not** alter the underlying SMSC delivery state or authorize implementation.
+
+## Confirmed headless/Go integration detail (D-038)
+
+The D-034 outer contract is refined by D-038: strict `schema_version=1` with `connection.sessions` (nonempty named bindings using env-secret references), `message`, `traffic`, `completion`, optional `capture`, `faults`, `seed`; unknown/duplicate/invalid fields rejected. No legacy `test` wrapper. One finite run, same Go config resolution for every interface. Structured JSON includes status/reason, redacted effective config, UTC timestamps, counters/per-session/DLR/diagnostics, and preserves execution-only exit codes 0/2/3/4/5/6. Go API uses `New`, `Run(context.Context)`, `Stop`, `Close` (idempotent). C++ calls the single binary via subprocess and owns assertions. Full policy: [Headless](HEADLESS_INTEGRATION.md#confirmed-nested-headless-and-go-api-v1-d-038).
 
 ## Traffic profiles — all six in V1
 
