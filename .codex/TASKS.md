@@ -1,6 +1,6 @@
 # Tasks — SMPP Test Studio
 
-## Current phase: owner decisions complete; design freeze audit pending; implementation not authorized
+## Current phase: **V1 DESIGN FROZEN** (D-001–D-040 confirmed); implementation NOT authorized
 
 ### P0 — Design before code
 - [x] Record approved scope and decisions in repository.
@@ -25,7 +25,7 @@
 - [x] Confirm D-039 connection recovery/rejoin, RX loss, 120s DLR retention and 1,000,000 mapping cap, local capture/snapshots and no automatic cleanup.
 
 - [x] Approve measurable V1 acceptance, five-minute 50k physical-submit TPS benchmark and separate DLR workload (D-040).
-- [x] Complete owner decisions D-001–D-040; design freeze still requires a cross-file consistency audit.
+- [x] Complete owner decisions D-001–D-040 and independent documentation consistency audit; design **FROZEN** (see `docs/V1_DESIGN_FREEZE.md`).
 
 ### Bounded engineering details (not additional owner approval gates)
 - [ ] Define optional Advanced config/type fields, advanced SMPP TLV allowlist and vendor interoperability fixtures; preserve confirmed D-034/D-038.
