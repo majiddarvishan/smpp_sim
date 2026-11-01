@@ -18,7 +18,7 @@
 - [x] Confirm headless outer JSON/YAML+JSON v1 contract and execution exit codes for C++ (**D-034**).
 - [ ] Specify nested config/result keys/types, public Go API method names, Advanced TLV list and vendor interoperability fixture plan within the approved D-032–D-034 boundaries.
 - [x] Confirm D-035 response selection model.
-- [ ] Finalize remaining D-035 delay, status and capacity parameters.
+- [x] Confirm D-036 fixed ACK delay, separate post-selection delay percentage, four error codes, default 10,000 pending ACK limit and controlled `resource_limit` stop.
 - [ ] Finalize Adaptive Window parameters.
 - [ ] Define bounded DLR ID-correlation retention/expiry and local storage/flushing; D-033 already fixes baseline ID and status correlation.
 - [ ] Approve measurable V1 acceptance and benchmark workload.
