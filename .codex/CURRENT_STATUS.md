@@ -10,11 +10,12 @@ Phase: **Specification / architecture; docs only**.
 - Product owner asked for light maintainable design, automated integration including C++, and no built-in assertions.
 - SMPP **3.4 only** is confirmed for V1.
 - Approved connection defaults and the ability to disable automatic enquire_link are recorded in D-024 and D-025.
+- **Auto + Manual encoding** selection approved in D-026. GSM7/UCS2 wire mapping, segmentation and unsupported Unicode policy are still open.
 - **Design only**: product owner explicitly requested no implementation yet.
 - Key product decisions: `docs/DECISIONS.md`.
 
 ## Next discussion
-Finalize `submit_sm` and DLR field semantics/defaults (starting with TON/NPI and encoding/multipart), then headless contract and fault-injection tuning. Still **design only**.
+Finalize remaining `submit_sm` and DLR field semantics (beginning with multipart UDH/SAR and TON/NPI; Auto encoding selection now approved), then headless contract and fault-injection tuning. Still **design only**.
 
 ## Safety/quality notes
 Do not claim runnable code, successful tests, acceptance, or implementation progress until actually executed and verified. Do not add GitHub Actions by default.

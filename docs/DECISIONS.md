@@ -29,6 +29,7 @@ Recorded from product design discussion through **2026-11-01**. **Confirmed** = 
 | D-023 | CONFIRMED | **Design-only phase continues. Do not start implementation until explicitly authorized by the owner.** |
 | D-024 | CONFIRMED | V1 connection defaults: **SMPP 3.4**, **TCP**, **TRX**, **1 connection**, **connect timeout 5s**, **bind timeout 10s**, **submit response timeout 5s**, **enquire_link interval 30s**, **enquire_link response timeout 10s**, **empty system_type**, **empty address_range**; all timeout values configurable. |
 | D-025 | CONFIRMED | Automatic `enquire_link` may be disabled for tests; exact config key/syntax remains to be decided. |
+| D-026 | CONFIRMED | V1 message encoding defaults to **Auto**: choose **GSM 03.38/GSM7** when the complete text is representable in its default/extension alphabet, otherwise **UCS2** for supported characters (including Persian). **Manual** choice of GSM7, UCS2, and binary plus explicit advanced `data_coding` configuration is supported for protocol tests. Exact wire encoding/interoperability and unsupported Unicode policy need design confirmation. |
 
 ## Interpretation notes
 
@@ -37,6 +38,7 @@ Recorded from product design discussion through **2026-11-01**. **Confirmed** = 
 - The rule to stop on all-TX loss overrides recovery of sending sessions for that run. RX in-process reconnect remains valid where TX is still healthy.
 - Previous examples of Adaptive Window sizes/timers, error distributions and exit codes remain illustrative. Connection defaults are explicitly approved in D-024. The `submit_sm_resp` timeout and Adaptive Window per-batch deadline are different timers.
 - A successful `submit_sm_resp` is not proof of final SMS delivery.
+- D-026 specifies the **product default selection policy**, not an SMPP-standard default: `data_coding=0x00` signals the SMSC default alphabet and does not guarantee the SMSC's wire GSM7 packing assumptions. `0x08` is the usual UCS2 indicator. Auto must not silently corrupt characters; exact implementation semantics remain pending.
 
 ## Future entries
 

@@ -4,7 +4,18 @@
 
 V1 supports plain TCP SMPP client binds TX/RX/TRX, sends `submit_sm` and consumes `submit_sm_resp`. It receives delivery receipts as inbound `deliver_sm` and sends matching `deliver_sm_resp` (same request `sequence_number`). **Delivery report is not an independent SMPP command**. Do not implement MO test flows.
 
-Required submit/message fields include source/destination TON/NPI, addresses, `data_coding`, `esm_class`, `registered_delivery`, message body or payload and optional TLVs. Include GSM7/UCS2/binary and multipart UDH/SAR paths as supported by the target SMPP profile. Encoding boundaries, defaults, validity formatting, TLV catalog and multipart method selection require protocol-focused design review.
+Required submit/message fields include source/destination TON/NPI, addresses, `data_coding`, `esm_class`, `registered_delivery`, message body or payload and optional TLVs. Include GSM7/UCS2/binary and multipart UDH/SAR paths as supported by the target SMPP profile. Default encoding **selection** is now confirmed as Auto (see below); encoding boundaries, validity formatting, TLV catalog and multipart method selection still require protocol-focused design review.
+
+## Approved encoding policy (design, not implemented)
+
+- **Default `Auto`:** classify the **fully expanded text** against the GSM 03.38 basic alphabet **and extension table**. If every character is representable, select GSM7; otherwise select UCS2 for representable characters (notably Persian). No silent lossy replacement or transliteration.
+- **Manual `GSM7`, `UCS2`, `Binary`:** Advanced controls select the encoding explicitly. Binary consumes raw octets rather than applying text auto-detection. Expose `data_coding` explicitly for specialist protocol tests; preserve consistent encoded bytes and flag intentional encoding/DCS mismatch if permitted later.
+- SMPP `data_coding=0x00` means **SMSC Default Alphabet** (commonly interpreted as GSM7 by interoperable implementations), not an unconditional on-wire claim that all SMSCs accept one GSM septet packing convention. `0x08` denotes UCS2. Decide packing/byte representation per SMPP binding and interoperability tests before code.
+- Exact handling of text characters outside the UCS-2 Basic Multilingual Plane (e.g., emoji) is **unresolved**. Such text must **not** be silently truncated, replaced, or mislabelled as UCS2.
+- Length/segmentation uses encoded octets, GSM escape characters' actual lengths, UDH/SAR overhead, and the selected carrier format. Record encoding used, DCS sent, and PDU/segment counts in metrics/results.
+- Apply the same rules through the Go API, CLI, Web UI, JSON/YAML headless runner and data templates. This section is a design choice, **not a finalized config schema**.
+
+References for the technical distinction: SMPP v3.4 Issue 1.2 data_coding description and https://docs.tibco.com/pub/bwsmpp/6.0.3/doc/html/users-guide/message-encoding.htm; GSM 03.38 alphabet and UCS2 mapping: https://developers.sinch.com/docs/sms/smpp/message-encoding.
 
 DLR processing: distinguish `submit_sm_resp` acceptance from terminal delivery; correlate using the returned message ID (and context when necessary); track delivered/failed/unknown, missing, late, duplicate and unmatched receipts. DLR may arrive over a different RX/TRX session from original submit. Message ID normalization rules are a **pending decision** (e.g. format differences across SMSCs).
 
