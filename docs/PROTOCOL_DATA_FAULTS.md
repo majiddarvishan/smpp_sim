@@ -20,7 +20,10 @@ References for the technical distinction: SMPP v3.4 Issue 1.2 data_coding descri
 ## Approved DLR request policy (design, not implemented)
 
 - Default `submit_sm.registered_delivery=0x00`; Basic has a per-Run Request DLR opt-in. An explicit Advanced full-byte override takes precedence, supporting protocol-specific receipt flags.
-- Exact Basic ON bit pattern is not yet fixed; do not silently assume non-final/intermediate receipt options.
+- **Basic ON = `0x01`** (final success or failure), OFF = `0x00`; no other bits set in Basic.
+- **Advanced `0x02`** requests a receipt on final failure only.
+- **Advanced `0x03`** is explicitly selectable for testing vendor-specific success-only behavior. It is **reserved in SMPP v3.4**, not a standards-defined success-only option. Preserve the exact byte; show a warning; observe and report actual SMSC behavior without fallback or assumed receipts. The SMPP v3.4 bind is unchanged.
+- Source: SMPP Developers Forum SMPP v3.4 Issue 1.2 §5.2.17, https://www.camera-sdk.com/attachments/3324/SMPP_v3_4_Issue1_2.pdf
 - Requesting DLR is separate from receiving/ACKing `deliver_sm`, fault injection policy, and completion choice. Submit+DLR completion must not wait for receipts that were never requested; classify any unsolicited receipts separately.
 - Multipart expected DLR semantics (per segment versus logical SMS) are still open. Report actual receipts without inventing delivery confirmation from a successful submit response.
 

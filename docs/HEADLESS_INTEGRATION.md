@@ -52,6 +52,10 @@ completion: {mode: submit_and_dlr, dlr_timeout: 10s}
 
 All field names, JSON schema, run status taxonomy, command flags, and exit codes in examples above are **proposals awaiting review**. The runner must keep logs separate from JSON output; use stable versioned machine-readable results, atomic result-file writes when possible, and redact credentials.
 
+## DLR request contract (schema pending)
+
+Basic DLR toggle: OFF `0x00`, ON `0x01`. Advanced values: `0x02` failure-only and `0x03` vendor-specific success-only compatibility probe (**reserved in SMPP 3.4**). Preserve the raw byte, expose a compatibility warning, and report actual behavior for C++ framework assertions; simulator has no assertions. This does not add SMPP v5 support.
+
 ## C++ integration contract
 
 The C++ test uses its usual test framework:

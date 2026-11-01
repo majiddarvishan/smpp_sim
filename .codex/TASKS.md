@@ -12,6 +12,7 @@
 - [x] Approve **Auto + Manual TON/NPI** selection (D-028) independently for source/destination; no implicit address normalization.
 - [x] Approve Auto TON/NPI normal mapping (D-029): digit-only without `+` => `0/0`, explicit `+` => `1/1`, alphanumeric => `5/0`, no address rewrite.
 - [x] Approve `registered_delivery=0x00` by default, per-run Request DLR toggle and full-byte Advanced override (D-030).
+- [x] Approve Basic DLR ON=`0x01` and Advanced `0x02` / vendor-specific reserved-in-3.4 `0x03` (D-031).
 - [ ] Finalize remaining `submit_sm` and DLR parameters: malformed-address validation, exact GSM7 packing/DCS interoperability, unsupported Unicode, UDH/SAR byte/reference rules, no-split oversize policy, optional PDU fields, multipart DLR/message ID normalization.
 - [ ] Finalize versioned config and result schema for CLI/Web UI/headless C++/Go integration, **without built-in assertions**.
 - [ ] Finalize deterministic fault-response policy and all Adaptive Window parameters.
