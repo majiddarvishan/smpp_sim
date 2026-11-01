@@ -29,6 +29,10 @@ These are **acceptance requirements**, not test results.
 
 Verify exactly one selected response per received `deliver_sm`; unconfigured policy gives immediate `ESME_ROK`; configured error plus no-response percentages never exceed 100%; remaining probability produces success; DLR override replaces generic policy in full, without percentage blending; delays apply only to ACK outcomes; configured random seed allows repeatable selection inputs; no-response produces no delayed ACK; per-policy selected and actually emitted counters remain accurate even with sampling off, and injected response outcomes do not alter delivery status. Exact delay ranges, allowed error statuses and queue capacity remain open design topics.
 
+## D-036 acceptance requirements (not executed)
+
+Verify Fixed ACK delay disabled at 0ms by default, selectable only after success/error ACK outcome via an independent configured delay percentage, maximum delay 60s by default but configurable, and exactly the four initial supported nonzero statuses. Verify selected No Response creates neither timer nor later ACK. With a bounded pending-ACK limit of 10,000 by default, reaching capacity must stop the run with `termination_reason=resource_limit` (runtime exit code 4 per D-034), preserving selected-vs-emitted counts and partial evidence rather than silently converting or dropping scheduled outcomes. The cap applies to pending delayed ACKs per run, not total DLR count. These are future acceptance cases, not results.
+
 ## Traffic/controller correctness
 
 - Constant, Ramp-up/down, Step, Burst, Unlimited, Adaptive Window each produce correct timing intent and stable observability.
